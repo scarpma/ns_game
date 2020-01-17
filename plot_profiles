@@ -1,0 +1,9 @@
+p 'data/profile_u.dat' u 1:($2/10.) with lines lc "green" t "exp u"
+rep 'data/profile_v.dat' u 1:($2/10.) with lines lc "green" t "exp v"
+rep 'data/ghia_u.dat' u 1:2 with points pt 30 lc "black" t "Re 100"
+rep 'data/ghia_v.dat' u 1:2 with points pt 30 lc "black" t ""
+rep 'data/ghia_u.dat' u 1:3 with points pt 30 lc "blue" t "Re 400"
+rep 'data/ghia_v.dat' u 1:3 with points pt 30 lc "blue" t ""
+rep 'data/ghia_u.dat' u 1:4 with points pt 30 lc "red" t "Re 1000"
+rep 'data/ghia_v.dat' u 1:4 with points pt 30 lc "red" t ""
+

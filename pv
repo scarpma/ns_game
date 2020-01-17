@@ -1,0 +1,1 @@
+../../ParaView-5.7.0-MPI-Linux-Python2.7-64bit/bin/paraview --state=data/vel_and_dens.pvsm &> /dev/null &

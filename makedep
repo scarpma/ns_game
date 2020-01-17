@@ -1,0 +1,3 @@
+#!/bin/bash
+grep " use " *.f90 | awk '{print "objs/"gensub(".f90:",".o:",1,$1), "objs/"$3".o"}' 
+#./makedep > make.dep

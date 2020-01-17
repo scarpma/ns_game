@@ -1,0 +1,151 @@
+module bc
+    use precision
+    implicit none
+
+    !interface 
+    !    subroutine set_bnd(b,x)
+    !        use precision    
+    !        integer, intent(in) :: b
+    !        real(sp), intent(inout), dimension(:,:) :: x
+    !    end subroutine
+    !end interface
+
+    contains
+
+    subroutine set_bnd_wt(b,x)
+        real(sp), intent(inout), dimension(0:,0:) :: x
+        integer, intent(in) :: b
+        integer :: i, N, j, i0, j0, r
+        i0 = N/2
+        j0 = N/5
+        r = N/10
+        print*, i0, j0, r
+        N = size(x,1) - 2
+        if (b == 0) then ! densità
+            x(0,1:N)   = x(1,1:N)
+            x(N+1,1:N) = x(N,1:N)
+            x(1:N,0)   = x(1:N,1)
+            x(1:N,N+1) = x(1:N,N)
+            x(0,0)     = (x(0,1)+x(1,0))/2._sp
+            x(0,N+1)   = (x(1,N+1)+x(0,N))/2._sp
+            x(N+1,0)   = (x(N+1,1)+x(N,0))/2._sp
+            x(N+1,N+1) = (x(N,N+1)+x(N+1,N))/2._sp
+        end if
+        if (b == 1) then ! u
+            x(0,1:N)   = u_in 
+            x(N+1,1:N) = u_in 
+            x(1:N,0)   = 0._sp
+            x(1:N,N+1) = 0._sp
+            x(0,0)     = (x(0,1)+x(1,0))/2._sp
+            x(0,N+1)   = (x(1,N+1)+x(0,N))/2._sp
+            x(N+1,0)   = (x(N+1,1)+x(N,0))/2._sp
+            x(N+1,N+1) = (x(N,N+1)+x(N+1,N))/2._sp
+            call bnd_cerchio(i0,j0,r,x)
+        end if
+        if (b == 2) then ! v
+            x(0,1:N)   = 0._sp
+            x(N+1,1:N) = 0._sp
+            x(1:N,0)   = -x(1,1:N)
+            x(1:N,N+1) = -x(N,1:N)
+            x(0,0)     = (x(0,1)+x(1,0))/2._sp
+            x(0,N+1)   = (x(1,N+1)+x(0,N))/2._sp
+            x(N+1,0)   = (x(N+1,1)+x(N,0))/2._sp
+            x(N+1,N+1) = (x(N,N+1)+x(N+1,N))/2._sp
+            call bnd_cerchio(i0,j0,r,x)
+        end if
+    end subroutine set_bnd_wt
+
+    subroutine set_bnd_box(b,x)
+        real(sp), intent(inout), dimension(0:,0:) :: x
+        integer, intent(in) :: b
+        integer :: i, N, j
+        integer :: i0, j0, r
+       
+         N = size(x,1) - 2
+        
+        ! CONDIZIONI SU LATI ORIZZONTALI (||u)
+        if(b==1) then
+            x(0,1:N) = -x(1,1:N)
+            x(N+1,1:N) = -x(N,1:N)
+        else
+            x(0,1:N) = x(1,1:N)
+            x(N+1,1:N) = x(N,1:N)
+        endif
+
+        ! CONDIZIONI SU LATI VERTICALI (||v)
+        if(b==2) then
+            x(1:N,0) = -x(1:N,1)
+            x(1:N,N+1) = -x(1:N,N)
+        else
+            x(1:N,0) = x(1:N,1)
+            x(1:N,N+1) = x(1:N,N)
+        endif
+
+        ! SLIP SLIT
+        !if(b==1) then
+        !    do i=1,N
+        !        x(i,N+1) = u_in
+        !        !x(i,N) = u_in
+        !    end do
+        !endif
+        
+        !if (b==2) then
+        !    i0=N/2+1
+        !    j0=4.0_sp*N/5
+        !    r=10
+        !    do j=1,N
+        !        do i=1,N
+        !            if((i-i0)**2+(j-j0)**2 <= r**2) then
+        !                x(i,j)= u_in
+        !            end if
+        !        end do
+        !    end do
+        !end if
+
+        ! vertici
+        x(0,0) = 0.5*(x(1,0) + x(0,1))
+        x(0,N+1) = 0.5*(x(1,N+1) + x(0,N+1))
+        x(N+1,0) = 0.5*(x(N,0) + x(N+1,1))
+        x(N+1,N+1) = 0.5*(x(N,N+1) + x(N+1,N))
+    end subroutine set_bnd_box
+
+    subroutine init_sources(d,u,v)
+        real(sp), dimension(0:,0:), intent(out) :: d, u, v
+        integer :: i, j, N
+        integer :: i0, j0, r
+
+        ! pacchetto circolare
+        N = size(u,1)-2
+        i0=N/2+1
+        j0=4.5_sp*N/5
+        r=10
+        do j=1,N
+            do i=1,N
+                if((i-i0)**2+(j-j0)**2 <= r**2) then
+                    d(i,j)= 10.0_sp
+                    v(i,j)= u_in
+                end if
+            end do
+        end do
+    end subroutine init_sources
+    
+    subroutine bnd_cerchio(i0,j0,r,x)
+        integer, intent(in) :: i0, j0, r ! centro e raggio cerchio  
+        real(sp), intent(inout), dimension(0:,0:) :: x
+        real(sp) :: xn, a, b
+        integer :: i, j, N
+        N = size(x,1) - 2
+        do i=1,N
+            do j=1,N
+                if ((i-i0)**2+(j-j0)**2 <= r**2) then
+                    print*, "1"
+                    a = real(abs(i-i0),sp)
+                    b = real(abs(j-j0),sp)
+                    xn = x(i,j)*sqrt(a**2+b**2)/b
+                    x = x - xn
+                end if
+            end do
+        end do
+    end subroutine bnd_cerchio
+
+end module bc

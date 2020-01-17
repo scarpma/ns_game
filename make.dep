@@ -1,0 +1,10 @@
+objs/bc.o: objs/precision.o
+objs/io_tools.o: objs/precision.o
+objs/io_tools.o: objs/solvers.o
+objs/main.o: objs/precision.o
+objs/main.o: objs/solvers.o
+objs/main.o: objs/io_tools.o
+objs/main.o: objs/bc.o
+objs/solvers.o: objs/precision.o
+objs/solvers.o: objs/bc.o
+objs/solvers.o: objs/precision.o
