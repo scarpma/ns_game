@@ -9,7 +9,7 @@ program ns_game
     integer :: L, M, Niter, i, err, ierr, j, argn, k
     real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, u_max_change, v_max_change
     character(64) :: argv, path
-    real(sp), parameter :: conv = 0.03
+    real(sp), parameter :: conv = 0.005
     
     call cpu_time(inizio)
      
@@ -36,7 +36,7 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.001_sp
+    dt = 0.0005
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
     visc = 0.01_sp
@@ -100,14 +100,14 @@ program ns_game
     ! INTEGRO
     print*, "Integro "
     j = 0
-    do i=1,Niter
+    do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
         !print*, "velstep"
         call vel_step(u,v,u0,v0,visc,set_bnd_box)
         !print*, "densstep"
         !call density_step(x,x0,u,v,diff,set_bnd_box)
         !print*, "write"
-        if (mod(i,Niter/30)==0) then
+        if (mod(i-1,Niter/30)==0) then
             write(path,'(a,i4.4,a)') "data/vel_out.v",j,".vtk"
             !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".vtk"
             !print*, "p write"
@@ -119,7 +119,7 @@ program ns_game
             !call write_vec_field(u,v,argv)
             j = j + 1
         end if
-        if (mod(i,500)==0) then
+        if (mod(i-1,500)==0) then
             u_max_change = maxval(abs((u(:,:) - u1(:,:))/u(:,:)))
             v_max_change = maxval(abs((v(:,:) - v1(:,:))/v(:,:)))
             write(*,'(" Iter ", I6, " u_change= ", ES9.2, " v_change= ", ES9.2)') i, u_max_change, v_max_change

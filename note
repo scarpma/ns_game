@@ -1,0 +1,5 @@
+1
+cambiare valore costante a cui si mettono le neumann conditions in bc.f90 (x(L/2,M/2)=0._sp)
+
+2
+implementare l'adimensionalizzazione: mettere 1/re al posto della viscosità

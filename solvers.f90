@@ -107,20 +107,16 @@ module solvers
                 p(i,j) = 0._sp
             end do
         end do
-        call bndcnd(0,div); call bndcnd(0,p)
+        ! dirichlet conditions on pressure and div(u)
+        call bndcnd(2,div); call bndcnd(2,p)
         do k=0,20
             do j=1,M
                 do i=1,L
                     p(i,j) = (div(i,j)+p(i-1,j)+p(i+1,j)+p(i,j-1)+p(i,j+1))/4._sp
                 end do
             end do
-            !call bndcnd(0,p)
             ! neumann conditions on pressure
-            p(0,1:M) = p(1,1:M)
-            p(L+1,1:M) = p(L,1:M)
-            p(1:L,0) = p(1:L,1)
-            p(1:L,M+1) = p(1:L,M)
-            p(:,:) = p(:,:) - p(2,3) !Pressure undefined to a constant. Fix at least 1 value of pressure
+            call bndcnd(0,p)
         end do
         
         do j=1,M
