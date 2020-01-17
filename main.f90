@@ -36,7 +36,7 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.0001_sp
+    dt = 0.001_sp
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
     visc = 0.01_sp
