@@ -108,7 +108,7 @@ module solvers
             end do
         end do
         ! dirichlet conditions on pressure and div(u)
-        call bndcnd(0,div); call bndcnd(0,p)
+        call bndcnd(2,div); call bndcnd(0,p)
         do k=0,20
             do j=1,M
                 do i=1,L
@@ -178,4 +178,10 @@ module solvers
         !print*, "vel step done"
     end subroutine vel_step
     
+    function errmax(u,u1)
+        real(sp), intent(inout), dimension(0:,0:) :: u, u1
+        real(sp) :: errmax
+        errmax = maxval(abs((u(:,:) - u1(:,:))/u(:,:)))
+    end function errmax
+
 end module solvers

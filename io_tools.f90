@@ -194,11 +194,45 @@ module io_tools
         write(*,"(' diff=',ES9.3)") diff
         write(*,"(' visc=',ES9.3)") visc
         write(*,"(' ReL=',ES9.3)") ReL
-        write(*,"(' xc=',ES9.3)") real(xc)*h
-        write(*,"(' yc=',ES9.3)") real(yc)*h
-        write(*,"(' rc=',ES9.3)") real(rc)*h
+        !write(*,"(' xc=',ES9.3)") real(xc)*h
+        !write(*,"(' yc=',ES9.3)") real(yc)*h
+        !write(*,"(' rc=',ES9.3)") real(rc)*h
     end subroutine print_parameters 
     
+    subroutine init_variables(x0,x,u0,u,u1,v0,v,v1, bndcnd)
+        real(sp), intent(inout), dimension(0:,0:) :: x0,x,u0,u,u1,v0,v,v1
+        procedure(set_bnd) :: bndcnd
+        if (command_argument_count()==5) then
+            ! CARICO CONDIZIONI INIZIALI DA ULTIMA SIMULAZIONE
+            !call get_ic_scalar(x,"data/dens_out.dat")
+            call get_ic_vec(u,v,"data/vel_out.dat")
+            x0 = x
+            u0 = u
+            v0 = v
+            u1 = u
+            v1 = v
+            ! SCRIVO CONDIZIONI INIZIALI USATE
+            !call write_scalar_field(x,"data/dens_ic.dat")
+            call write_vec_field(u,v,"data/vel_ic.dat")
+        else if (command_argument_count()==4) then
+            ! INIZIALIZZO VARIABILI
+            x = 0._sp
+            u = 0._sp
+            v = 0._sp
+            !call init_sources(x,u,v)
+            x0 = x
+            u0 = u
+            v0 = v
+            ! IMPONGO CONDIZIONI AL BORDO SULLA C.I.
+            call set_all_bnd(x,u,v,x0,u0,v0,set_bnd_box)
+            u1 = u
+            v1 = v
+            ! SCRIVO CONDIZIONI INIZIALI USATE
+            !call write_scalar_field(x,"data/dens_ic.dat")
+            call write_vec_field(u,v,"data/vel_ic.dat")
+        end if
+    end subroutine init_variables
+
     subroutine progress(j)
         implicit none
         integer(kind=4)::j,k

@@ -7,9 +7,9 @@ program ns_game
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1
     integer :: L, M, Niter, i, err, ierr, j, argn, k
-    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, u_max_change, v_max_change
+    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, errmax_u, errmax_v
     character(64) :: argv, path
-    real(sp), parameter :: conv = 0.005
+    real(sp), parameter :: conv = 0.03
     
     call cpu_time(inizio)
      
@@ -61,36 +61,10 @@ program ns_game
          stop
     end if
 
-    if (command_argument_count()==5) then
-        ! CARICO CONDIZIONI INIZIALI DA ULTIMA SIMULAZIONE
-        !call get_ic_scalar(x,"data/dens_out.dat")
-        call get_ic_vec(u,v,"data/vel_out.dat")
-        x0 = x
-        u0 = u
-        v0 = v
-        u1 = u
-        v1 = v
-        ! SCRIVO CONDIZIONI INIZIALI USATE
-        !call write_scalar_field(x,"data/dens_ic.dat")
-        call write_vec_field(u,v,"data/vel_ic.dat")
-    else if (command_argument_count()==4) then
-        ! INIZIALIZZO VARIABILI
-        x = 0._sp
-        u = 0._sp
-        v = 0._sp
-        !call init_sources(x,u,v)
-        x0 = x
-        u0 = u
-        v0 = v
-        ! IMPONGO CONDIZIONI AL BORDO SULLA C.I.
-        call set_all_bnd(x,u,v,x0,u0,v0,set_bnd_box)
-        u1 = u
-        v1 = v
-        ! SCRIVO CONDIZIONI INIZIALI USATE
-        !call write_scalar_field(x,"data/dens_ic.dat")
-        call write_vec_field(u,v,"data/vel_ic.dat")
-    end if
+    ! INIZIALIZZO VARIABILI
+    call init_variables(x0,x,u0,u,u1,v0,v,v1,set_bnd_box)
     
+    ! SCRIVO DATI INIZIALI
     i = 0
     write(path,'(a,i4.4,a)') "data/vel_out.v",i,".vtk"
     !write(argv,'(a,i4.4,a)') "data/dens_out.v",i,".vtk"
@@ -102,35 +76,29 @@ program ns_game
     j = 0
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        !print*, "velstep"
         call vel_step(u,v,u0,v0,visc,set_bnd_box)
-        !print*, "densstep"
         !call density_step(x,x0,u,v,diff,set_bnd_box)
-        !print*, "write"
         if (mod(i-1,Niter/30)==0) then
             write(path,'(a,i4.4,a)') "data/vel_out.v",j,".vtk"
             !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".vtk"
-            !print*, "p write"
             call out_paraview_2D_uv(u,v,path)
             !call out_paraview_2D_dens(x,argv)
-            !write(path,'(a,i4.4,a)') "data/vel_out.v",j,".dat"
-            !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".dat"
-            !call write_scalar_field(x,path)
-            !call write_vec_field(u,v,argv)
             j = j + 1
         end if
+
+        call progress(10*i/Niter)
+
         if (mod(i-1,500)==0) then
-            u_max_change = maxval(abs((u(:,:) - u1(:,:))/u(:,:)))
-            v_max_change = maxval(abs((v(:,:) - v1(:,:))/v(:,:)))
-            write(*,'(" Iter ", I6, " u_change= ", ES9.2, " v_change= ", ES9.2)') i, u_max_change, v_max_change
-            if (u_max_change <= conv .and. v_max_change <= conv) then
-                print*, 'Convergenza al', conv,'% raggiunta. Arresto.'
+            errmax_u = errmax(u,u1)
+            errmax_v = errmax(v,v1)
+            write(*,'(" Iter ", I6, " errmax_u= ", ES7.1, " errmax_v= ", ES7.1)') i,  errmax_u, errmax_v
+            if (errmax_u <= conv .and. errmax_v <= conv) then
+                write(*,'("Convergenza al ", ES7.1,"% raggiunta. Arresto.")') conv*100
                 exit
             end if
             u1 = u
             v1 = v
         end if
-        call progress(10*i/Niter)
     end do
     
     ! SCRIVO FILE OUTPUT
@@ -138,8 +106,7 @@ program ns_game
     !call write_scalar_field(x,"data/dens_out.dat")
     call write_vec_field(u,v,"data/vel_out.dat")
     
-    ! SCRIVO SOLUZIONE ESATTA E PROFILI CALCOLATI
-    !call exact()
+    ! SCRIVO PROFILI PER CONFRONTO CON SOL. ESATTA
     call write_profiles(u,v)
     
     ! DEALLOCO
@@ -151,6 +118,6 @@ program ns_game
     
     call cpu_time(fine)
     fine = fine - inizio
-    write(*,"(' Finito: durata totale ',F7.3,' secondi')") fine
+    write(*,"(' Finito: durata totale ',F7.1,' secondi')") fine
 
 end program ns_game
