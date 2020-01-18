@@ -3,3 +3,6 @@ cambiare valore costante a cui si mettono le neumann conditions in bc.f90 (x(L/2
 
 2
 implementare l'adimensionalizzazione: mettere 1/re al posto della viscosità
+
+3
+implementare il controllo sulla convergenza degli algoritmi iterativi (k=20 giusto?)

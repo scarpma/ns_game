@@ -108,7 +108,7 @@ module solvers
             end do
         end do
         ! dirichlet conditions on pressure and div(u)
-        call bndcnd(2,div); call bndcnd(2,p)
+        call bndcnd(0,div); call bndcnd(0,p)
         do k=0,20
             do j=1,M
                 do i=1,L

@@ -63,22 +63,22 @@ module bc
         
         select case(b)
         case(0)
-          ! NEUMANN B.C.    
+          ! NEUMANN B.C.
           x(0,1:M) = 4.0_sp/3.0_sp*x(1,1:M)-1.0_sp/3.0_sp*x(2,1:M)
           x(L+1,1:M) = 4.0_sp/3.0_sp*x(L,1:M)-1.0_sp/3.0_sp*x(L-1,1:M)
           x(1:L,0) =  4.0_sp/3.0_sp*x(1:L,1)-1.0_sp/3.0_sp*x(1:L,2)
           x(1:L,M+1) = 4.0_sp/3.0_sp*x(1:L,M)-1.0_sp/3.0_sp*x(1:L,M-1)
           ! fix pressure on one point (does not seem to work)
           !x(L/2,M/2) = 0.0_sp
-          x(:,:) = x(:,:) - x(2,3) !Pressure undefined to a constant. Fix at least 1 value of pressure
+          !x(:,:) = x(:,:) - x(2,3) !Pressure undefined to a constant. Fix at least 1 value of pressure
         case(1)
-          ! DIRICHLET B.C.    
+          ! DIRICHLET B.C.
           x(0,1:M) = 0._sp!-x(1,1:M)
           x(L+1,1:M) = 0._sp!-x(L,1:M)
           x(1:L,0) = 0._sp!-x(1:L,1)
           x(1:L,M+1) = u_in!0._sp!-x(1:L,M)
         case(2)
-          ! DIRICHLET B.C.    
+          ! DIRICHLET B.C.
           x(0,1:M) = 0._sp!-x(1,1:M)
           x(L+1,1:M) = 0._sp!-x(L,1:M)
           x(1:L,0) = 0._sp!-x(1:L,1)
