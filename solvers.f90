@@ -3,6 +3,8 @@ module solvers
     use bc
     implicit none
 
+    real(sp), parameter :: conviter = 0.05
+
     interface 
         subroutine set_bnd(b,x)
             use precision    
@@ -42,19 +44,27 @@ module solvers
         real(sp), intent(inout), dimension(0:,0:) :: x
         real(sp), intent(in), dimension(0:,0:) :: x0
         real(sp), intent(in) :: diff
-        real(sp) :: a
+        real(sp) :: a, x_av, x_av0
         integer :: k, i, j, L, M
 
         L = size(x,1)-2
         M = size(x,2)-2
         a = dt*diff/(h**2._sp)
-        do k=1,20
+        x_av0 = 1.0_sp
+        do k=1,40
+            x_av = 0._sp
             do j=1,M
                 do i=1,L
                     x(i,j) = ( x0(i,j) + a*(x(i-1,j)+x(i+1,j)+x(i,j-1)+x(i,j+1)) )/(1._sp+4._sp*a)
+                    x_av = x_av + x(i,j)
                 end do
             end do
+            if (abs(x_av-x_av0)<conviter) exit
+            x_av0 = x_av
         end do
+
+        !write(*,'(a1,i1,a1,3(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),k
+    
     end subroutine diffuse
     
     subroutine advect(b, d, d0, u, v)
@@ -72,8 +82,8 @@ module solvers
         !print*, "start cycle advect"
         do j=1,M
             do i=1,L
-                x = real(i,sp) - dt0*u(i,j)
-                y = real(j,sp) - dt0*v(i,j)
+                x = i - dt0*u(i,j)
+                y = j - dt0*v(i,j)
                 if (x < 0.5_sp)      x = 0.5_sp
                 if (x > LL + 0.5_sp) x = LL + 0.5_sp 
                 i0 = int(x)
@@ -86,9 +96,6 @@ module solvers
                 s0 = 1._sp - s1
                 t1 = y - j0
                 t0 = 1._sp - t1
-                !print*, u(i,j), v(i,j)
-                !print*, x,y
-                !print*, i0,j0,i1,j1
                 d(i,j) = s0*(t0*d0(i0,j0)+t1*d0(i0,j1))+s1*(t0*d0(i1,j0)+t1*d0(i1,j1))
             end do
         end do
@@ -98,26 +105,34 @@ module solvers
     subroutine project(u, v, p, div, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout) :: u(0:,0:), v(0:,0:), p(0:,0:), div(0:,0:)
+        real(sp) :: p_av, p_av0
         integer :: i, j, k, L, M
         L = size(u,1)-2
         M = size(u,2)-2
         do j=1,M
             do i=1,L
-                div(i,j) = -0.5*h*(u(i+1,j)-u(i-1,j)+v(i,j+1)-v(i,j-1))
-                p(i,j) = 0._sp
+                div(i,j) = -0.5_sp*h*(u(i+1,j)-u(i-1,j)+v(i,j+1)-v(i,j-1))
+                p(i,j) = 0.0_sp
             end do
         end do
         ! dirichlet conditions on pressure and div(u)
         call bndcnd(2,div); call bndcnd(0,p)
-        do k=0,20
+        p_av0 = 1.0_sp
+        do k=0,1000
+            p_av = 0.0_sp
             do j=1,M
                 do i=1,L
                     p(i,j) = (div(i,j)+p(i-1,j)+p(i+1,j)+p(i,j-1)+p(i,j+1))/4._sp
+                    p_av = p_av + p(i,j)
                 end do
             end do
             ! neumann conditions on pressure
             call bndcnd(0,p)
+            if (abs(p_av0-p_av)<conviter) exit
+            p_av0 = p_av
         end do
+
+        !write(*,'(a,3(ES15.6),i4)') 'PP ',minval(p),maxval(p),p_av/(L*M),k
         
         do j=1,M
             do i=1,L
