@@ -1,4 +1,2 @@
 data/*.vtk
-objs/*.o
-objs/*.mod
 ns
