@@ -3,7 +3,7 @@ module solvers
     use bc
     implicit none
 
-    real(sp), parameter :: conviter = 0.05
+    real(sp), parameter :: conviter = 0.005
 
     interface 
         subroutine set_bnd(b,x)
@@ -50,20 +50,20 @@ module solvers
         L = size(x,1)-2
         M = size(x,2)-2
         a = dt*diff/(h**2._sp)
-        x_av0 = 1.0_sp
-        do k=1,40
-            x_av = 0._sp
+   !    x_av0 = 1.0_sp
+        do k=1,20
+   !         x_av = 0._sp
             do j=1,M
                 do i=1,L
                     x(i,j) = ( x0(i,j) + a*(x(i-1,j)+x(i+1,j)+x(i,j-1)+x(i,j+1)) )/(1._sp+4._sp*a)
-                    x_av = x_av + x(i,j)
+   !                 x_av = x_av + x(i,j)
                 end do
             end do
-            if (abs(x_av-x_av0)<conviter) exit
-            x_av0 = x_av
+   !         if (abs(x_av-x_av0)<conviter) exit
+   !         x_av0 = x_av
         end do
 
-        !write(*,'(a1,i1,a1,3(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),k
+        !write(*,'(a1,i1,a1,4(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),abs(x_av-x_av),k
     
     end subroutine diffuse
     
@@ -105,8 +105,8 @@ module solvers
     subroutine project(u, v, p, div, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout) :: u(0:,0:), v(0:,0:), p(0:,0:), div(0:,0:)
-        real(sp) :: p_av, p_av0
-        integer :: i, j, k, L, M
+        integer :: i, j, k, L, M, kk
+        real(sp) :: divmax
         L = size(u,1)-2
         M = size(u,2)-2
         do j=1,M
@@ -116,23 +116,18 @@ module solvers
             end do
         end do
         ! dirichlet conditions on pressure and div(u)
-        call bndcnd(2,div); call bndcnd(0,p)
-        p_av0 = 1.0_sp
-        do k=0,1000
-            p_av = 0.0_sp
+        kk = 1
+        1020 call bndcnd(2,div); call bndcnd(0,p)
+        do k=0,20
             do j=1,M
                 do i=1,L
                     p(i,j) = (div(i,j)+p(i-1,j)+p(i+1,j)+p(i,j-1)+p(i,j+1))/4._sp
-                    p_av = p_av + p(i,j)
                 end do
             end do
             ! neumann conditions on pressure
             call bndcnd(0,p)
-            if (abs(p_av0-p_av)<conviter) exit
-            p_av0 = p_av
         end do
 
-        !write(*,'(a,3(ES15.6),i4)') 'PP ',minval(p),maxval(p),p_av/(L*M),k
         
         do j=1,M
             do i=1,L
@@ -140,6 +135,19 @@ module solvers
                 v(i,j) = v(i,j) - 0.5*(p(i,j+1)-p(i,j-1))/h
             end do
         end do
+        ! controllo se la divergenza è nulla
+        !do j=1,M
+        !    do i=1,L
+        !        div(i,j) = -0.5_sp*h*(u(i+1,j)-u(i-1,j)+v(i,j+1)-v(i,j-1))
+        !    end do
+        !end do
+        !divmax = maxval(abs(div(:,:)))
+        !if (divmax > 0.01_sp) then
+        !    kk = kk + 1
+        !    goto 1020
+        !end if
+        !print*, kk*40
+            
     end subroutine project
     
     subroutine density_step(x, x0, u, v, diff, bndcnd)
