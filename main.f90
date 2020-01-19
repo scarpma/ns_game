@@ -7,7 +7,7 @@ program ns_game
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
     integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
-    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine
+    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, u_in
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
     
@@ -77,11 +77,11 @@ program ns_game
     j = 0
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        call vel_step(u,v,u0,v0,p,div,visc,set_bnd_box)
+        call vel_step(u,v,u0,v0,p,div,1.0_sp/ReL,set_bnd_box)
         !call density_step(x,x0,u,v,diff,set_bnd_box)
         call take_n_snapshots(30,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)
-        call check_uv_maxerr(500,u,v,u1,v1,conv,i-1,conv_check)
+        call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
         if (conv_check == 1) exit
     end do
     

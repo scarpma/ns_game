@@ -30,8 +30,8 @@ module bc
             
         end if
         if (b == 1) then ! u
-            x(0,1:M)   = u_in           ! parete in
-            x(L+1,1:M) = u_in           ! parete out
+            x(0,1:M)   = 0._sp!u_in           ! parete in
+            x(L+1,1:M) = 0._sp!u_in           ! parete out
             x(1:L,0)   = 0._sp!x(1:N,1)       ! parete sotto
             x(1:L,M+1) = 0._sp!x(1:N,N)       ! parete sopra
             x(0,0)     = (x(0,1)+x(1,0))/2._sp
@@ -76,7 +76,7 @@ module bc
           x(0,1:M) = 0._sp!-x(1,1:M)
           x(L+1,1:M) = 0._sp!-x(L,1:M)
           x(1:L,0) = 0._sp!-x(1:L,1)
-          x(1:L,M+1) = u_in!0._sp!-x(1:L,M)
+          x(1:L,M+1) = 1.0_sp!0._sp!-x(1:L,M)
         case(2)
           ! DIRICHLET B.C.
           x(0,1:M) = 0._sp!-x(1,1:M)
@@ -158,7 +158,7 @@ module bc
             do i=1,L
                 if((i-i0)**2+(j-j0)**2 <= r**2) then
                     d(i,j) = 10.0_sp
-                    u(i,j) = u_in
+                    u(i,j) = 10.0_sp
                 end if
             end do
         end do
