@@ -5,7 +5,7 @@ program ns_game
     use bc
     implicit none
     
-    real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1
+    real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
     integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
     real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine
     character(64) :: argv, path
@@ -56,6 +56,7 @@ program ns_game
     allocate(u0(0:L+1,0:M+1), v0(0:L+1,0:M+1), stat=err)
     allocate(u1(0:L+1,0:M+1), v1(0:L+1,0:M+1), stat=err)
     allocate(x(0:L+1,0:M+1), x0(0:L+1,0:M+1), stat=err)
+    allocate(p(0:L+1,0:M+1), div(0:L+1,0:M+1), stat=err)
     if (err > 0) then
          print*, "allocation error"
          stop
@@ -76,7 +77,7 @@ program ns_game
     j = 0
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        call vel_step(u,v,u0,v0,visc,set_bnd_box)
+        call vel_step(u,v,u0,v0,p,div,visc,set_bnd_box)
         !call density_step(x,x0,u,v,diff,set_bnd_box)
         call take_n_snapshots(30,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)

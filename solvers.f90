@@ -172,33 +172,25 @@ module solvers
         !print*, "step done" 
     end subroutine density_step
 
-    subroutine vel_step(u,v,u0,v0,visc,bndcnd)
+    subroutine vel_step(u,v,u0,v0,p,div,visc,bndcnd)
         procedure(set_bnd) :: bndcnd
-        real(sp), intent(inout), dimension(0:,0:) :: u, v, u0, v0
+        real(sp), intent(inout), dimension(0:,0:) :: u, v, u0, v0, p, div
         real(sp), intent(in) :: visc
         integer :: L, M
         L = size(u,1)-2
         M = size(u,2)-2
-        !print*, "add source uv"
         call add_source(u,u0)
         call add_source(v,v0)
-        !print*, "diffuse uv"
-        call diffuse(1,u0,u,visc)
-        call diffuse(2,v0,v,visc)
+        call advect(1,u0,u,u,v)
+        call advect(2,v0,v,u,v)
+        call bndcnd(1,u0); call bndcnd(2,v0); !call bnd_cerchio(xc,yc,rc,u,v)
+        call project(u0,v0,p,div,bndcnd)
         call bndcnd(1,u0); call bndcnd(2,v0); !call bnd_cerchio(xc,yc,rc,u0,v0)
-        !print*, "project"
-        call project(u0,v0,u,v,bndcnd)
-        call bndcnd(1,u0); call bndcnd(2,v0); !call bnd_cerchio(xc,yc,rc,u0,v0)
-        !print*, "advect uv"
-        call advect(1,u,u0,u0,v0)
-        call advect(2,v,v0,u0,v0)
-        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u,v)
-        !print*, "project"
-        call project(u,v,u0,v0,bndcnd)
-        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u,v)
-        ! A QUESTO PUNTO LE U0 E V0 CONTENGONO MERDA
-        u0 = u; v0 = v
-        !print*, "vel step done"
+        call diffuse(1,u,u0,visc)
+        call diffuse(2,v,v0,visc)
+        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u0,v0)
+        call project(u,v,p,div,bndcnd)
+        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u0,v0)
     end subroutine vel_step
     
     function errmax(u,u1)
