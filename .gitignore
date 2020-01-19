@@ -1,2 +1,5 @@
 data/*.vtk
+data/*.dat
+!data/ghia_u.dat
+!data/ghia_v.dat
 ns
