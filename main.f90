@@ -5,9 +5,9 @@ program ns_game
     use bc
     implicit none
     
-    real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1
-    integer :: L, M, Niter, i, err, ierr, j, argn, k
-    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, errmax_u, errmax_v
+    real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
+    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
+    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
     
@@ -56,6 +56,7 @@ program ns_game
     allocate(u0(0:L+1,0:M+1), v0(0:L+1,0:M+1), stat=err)
     allocate(u1(0:L+1,0:M+1), v1(0:L+1,0:M+1), stat=err)
     allocate(x(0:L+1,0:M+1), x0(0:L+1,0:M+1), stat=err)
+    allocate(p(0:L+1,0:M+1), div(0:L+1,0:M+1), stat=err)
     if (err > 0) then
          print*, "allocation error"
          stop
@@ -76,29 +77,12 @@ program ns_game
     j = 0
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        call vel_step(u,v,u0,v0,visc,set_bnd_box)
+        call vel_step(u,v,u0,v0,p,div,visc,set_bnd_box)
         !call density_step(x,x0,u,v,diff,set_bnd_box)
-        if (mod(i-1,Niter/30)==0) then
-            write(path,'(a,i4.4,a)') "data/vel_out.v",j,".vtk"
-            !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".vtk"
-            call out_paraview_2D_uv(u,v,path)
-            !call out_paraview_2D_dens(x,argv)
-            j = j + 1
-        end if
-
-        call progress(10*i/Niter)
-
-        if (mod(i-1,500)==0) then
-            errmax_u = errmax(u,u1)
-            errmax_v = errmax(v,v1)
-            write(*,'(" Iter ", I6, " errmax_u= ", ES7.1, " errmax_v= ", ES7.1)') i,  errmax_u, errmax_v
-            if (errmax_u <= conv .and. errmax_v <= conv) then
-                write(*,'("Convergenza al ", ES7.1,"% raggiunta. Arresto.")') conv*100
-                exit
-            end if
-            u1 = u
-            v1 = v
-        end if
+        call take_n_snapshots(30,x,u,v,i,j,Niter)
+        call progress(10*(i+1)/Niter)
+        call check_uv_maxerr(500,u,v,u1,v1,conv,i-1,conv_check)
+        if (conv_check == 1) exit
     end do
     
     ! SCRIVO FILE OUTPUT
