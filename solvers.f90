@@ -202,9 +202,31 @@ module solvers
     end subroutine vel_step
     
     function errmax(u,u1)
-        real(sp), intent(inout), dimension(0:,0:) :: u, u1
+        real(sp), intent(in), dimension(0:,0:) :: u, u1
         real(sp) :: errmax
         errmax = maxval(abs((u(:,:) - u1(:,:))/u(:,:)))
     end function errmax
+    
+    subroutine check_uv_maxerr(n,u,v,u1,v1,conv,i,conv_check)
+        integer, intent(in) :: n, i
+        integer, intent(inout) :: conv_check
+        real(sp), intent(in) :: conv
+        real(sp), intent(in), dimension(0:,0:) :: u, v
+        real(sp), intent(inout), dimension(0:,0:) :: u1, v1
+        real(sp) :: errmax_u, errmax_v
+        
+        if (mod(i,n)==0) then
+            errmax_u = errmax(u,u1)
+            errmax_v = errmax(v,v1)
+            write(*,'(" Iter ", I6, " errmax_u= ", ES7.1, " errmax_v= ", ES7.1)') i,  errmax_u, errmax_v
+            if (errmax_u <= conv .and. errmax_v <= conv) then
+                write(*,'("Convergenza al ", ES7.1,"% raggiunta. Arresto.")') conv*100
+                conv_check = 1
+            end if
+            u1 = u
+            v1 = v
+        end if
+    end subroutine check_uv_maxerr
+
 
 end module solvers

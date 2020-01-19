@@ -199,6 +199,21 @@ module io_tools
         !write(*,"(' rc=',ES9.3)") real(rc)*h
     end subroutine print_parameters 
     
+    subroutine take_n_snapshots(n,x,u,v,i,j,Niter)
+        integer, intent(in) :: i, n, Niter
+        integer, intent(inout) :: j
+        real(sp), intent(in), dimension(0:,0:) :: x,u,v
+        character(64) :: path
+        
+        if (mod(i-1,Niter/n)==0) then
+            write(path,'(a,i4.4,a)') "data/vel_out.v",j,".vtk"
+            !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".vtk"
+            call out_paraview_2D_uv(u,v,path)
+            !call out_paraview_2D_dens(x,argv)
+            j = j + 1
+        end if
+    end subroutine take_n_snapshots
+
     subroutine init_variables(x0,x,u0,u,u1,v0,v,v1, bndcnd)
         real(sp), intent(inout), dimension(0:,0:) :: x0,x,u0,u,u1,v0,v,v1
         procedure(set_bnd) :: bndcnd
