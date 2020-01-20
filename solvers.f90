@@ -39,47 +39,65 @@ module solvers
         end do
     end subroutine add_source
 
-    subroutine diffuse(b, x, x0, diff)
+    subroutine lin_sol_gaussseidel(b,x,x0,a,c,bndcnd)
+        procedure(set_bnd) :: bndcnd
         integer, intent(in) :: b
         real(sp), intent(inout), dimension(0:,0:) :: x
         real(sp), intent(in), dimension(0:,0:) :: x0
-        real(sp), intent(in) :: diff
-        real(sp) :: a, x_av, x_av0
-        integer :: k, i, j, L, M
-
+        real(sp), intent(in) :: a, c
+        
+        integer :: L, M, k, i, j
+   !     real(sp) :: x_av, x_av0
+        
         L = size(x,1)-2
         M = size(x,2)-2
-        a = dt*diff/(h**2._sp)
-   !    x_av0 = 1.0_sp
+        
         do k=1,20
    !         x_av = 0._sp
             do j=1,M
                 do i=1,L
-                    x(i,j) = ( x0(i,j) + a*(x(i-1,j)+x(i+1,j)+x(i,j-1)+x(i,j+1)) )/(1._sp+4._sp*a)
+                    x(i,j) = ( x0(i,j) + a*(x(i-1,j)+x(i+1,j)+x(i,j-1)+x(i,j+1)) )/c
    !                 x_av = x_av + x(i,j)
                 end do
             end do
+        call bndcnd(b,x)
    !         if (abs(x_av-x_av0)<conviter) exit
    !         x_av0 = x_av
         end do
-
         !write(*,'(a1,i1,a1,4(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),abs(x_av-x_av),k
-    
+    end subroutine lin_sol_gaussseidel
+
+    subroutine diffuse(b, x, x0, diff,bndcnd)
+        procedure(set_bnd) :: bndcnd
+        integer, intent(in) :: b
+        real(sp), intent(inout), dimension(0:,0:) :: x
+        real(sp), intent(in), dimension(0:,0:) :: x0
+        real(sp), intent(in) :: diff
+
+        real(sp) :: a, x_av, x_av0
+        integer :: L, M
+
+        L = size(x,1)-2
+        M = size(x,2)-2
+        a = dt*diff/(h**2._sp)
+        call lin_sol_gaussseidel(b,x,x0,a,1.0_sp+4.0_sp*a,bndcnd)  
     end subroutine diffuse
     
-    subroutine advect(b, d, d0, u, v)
+    subroutine advect(b, d, d0, u, v, bndcnd)
+        procedure(set_bnd) :: bndcnd
         integer, intent(in) :: b
         real(sp), intent(inout), dimension(0:,0:) :: d
         real(sp), intent(in), dimension(0:,0:) :: d0, u, v
+
         real(sp) :: x, y, s0, t0, s1, t1, dt0, LL, MM
         integer :: i, j, i0, j0, i1, j1, L, M
+
         L = size(d,1)-2
         M = size(d,2)-2
         i0 = 0; j0 = 0; i1 = 0; j1 = 0
         LL = real(L,sp)
         MM = real(M,sp)
         dt0 = dt/h
-        !print*, "start cycle advect"
         do j=1,M
             do i=1,L
                 x = i - dt0*u(i,j)
@@ -99,13 +117,13 @@ module solvers
                 d(i,j) = s0*(t0*d0(i0,j0)+t1*d0(i0,j1))+s1*(t0*d0(i1,j0)+t1*d0(i1,j1))
             end do
         end do
-        !print*, "end cycle advect"
+        call bndcnd(b,d)
     end subroutine advect
 
     subroutine project(u, v, p, div, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout) :: u(0:,0:), v(0:,0:), p(0:,0:), div(0:,0:)
-        integer :: i, j, k, L, M, kk
+        integer :: i, j, k, L, M
         real(sp) :: divmax
         L = size(u,1)-2
         M = size(u,2)-2
@@ -116,19 +134,9 @@ module solvers
             end do
         end do
         ! dirichlet conditions on pressure and div(u)
-        kk = 1
+        k = 1
         1020 call bndcnd(2,div); call bndcnd(0,p)
-        do k=0,20
-            do j=1,M
-                do i=1,L
-                    p(i,j) = (div(i,j)+p(i-1,j)+p(i+1,j)+p(i,j-1)+p(i,j+1))/4._sp
-                end do
-            end do
-            ! neumann conditions on pressure
-            call bndcnd(0,p)
-        end do
-
-        
+        call lin_sol_gaussseidel(0,p,div,1.0_sp,4.0_sp,bndcnd)
         do j=1,M
             do i=1,L
                 u(i,j) = u(i,j) - 0.5*(p(i+1,j)-p(i-1,j))/h
@@ -143,33 +151,19 @@ module solvers
         !end do
         !divmax = maxval(abs(div(:,:)))
         !if (divmax > 0.01_sp) then
-        !    kk = kk + 1
+        !    k = k + 1
         !    goto 1020
         !end if
-        !print*, kk*40
-            
+        !print*, k*40
     end subroutine project
     
     subroutine density_step(x, x0, u, v, diff, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout), dimension(0:,0:) :: x, x0, u, v
         real(sp), intent(in) :: diff
-        !print*, "add source" 
         call add_source(x,x0)
-        !print*, "x0=x" 
-        !x0 = x
-        !print*, "diffuse" 
-        call diffuse(0,x0,x,diff)
-        call bndcnd(0,x0)
-        !print*, "diffuse", x(23,23)
-        !print*, "x0=x" 
-        !x0 = x
-        !print*, "advect" 
-        call advect(0,x,x0,u,v)
-        call bndcnd(0,x)
-        x0 = x
-        !print*, "advect", x(23,23)
-        !print*, "step done" 
+        call diffuse(0,x0,x,diff,bndcnd)
+        call advect(0,x,x0,u,v,bndcnd)
     end subroutine density_step
 
     subroutine vel_step(u,v,u0,v0,p,div,visc,bndcnd)
@@ -181,16 +175,16 @@ module solvers
         M = size(u,2)-2
         call add_source(u,u0)
         call add_source(v,v0)
-        call advect(1,u0,u,u,v)
-        call advect(2,v0,v,u,v)
-        call bndcnd(1,u0); call bndcnd(2,v0); !call bnd_cerchio(xc,yc,rc,u,v)
+        call advect(1,u0,u,u,v,bndcnd)
+        call advect(2,v0,v,u,v,bndcnd)
+        !call bnd_cerchio(xc,yc,rc,u,v)
         call project(u0,v0,p,div,bndcnd)
-        call bndcnd(1,u0); call bndcnd(2,v0); !call bnd_cerchio(xc,yc,rc,u0,v0)
-        call diffuse(1,u,u0,visc)
-        call diffuse(2,v,v0,visc)
-        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u0,v0)
+        !call bnd_cerchio(xc,yc,rc,u0,v0)
+        call diffuse(1,u,u0,visc,bndcnd)
+        call diffuse(2,v,v0,visc,bndcnd)
+        !call bnd_cerchio(xc,yc,rc,u0,v0)
         call project(u,v,p,div,bndcnd)
-        call bndcnd(1,u); call bndcnd(2,v); !call bnd_cerchio(xc,yc,rc,u0,v0)
+        !call bnd_cerchio(xc,yc,rc,u0,v0)
     end subroutine vel_step
     
     function errmax(u,u1)
