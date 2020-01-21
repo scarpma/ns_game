@@ -39,7 +39,7 @@ module solvers
         end do
     end subroutine add_source
 
-    subroutine lin_sol_gaussseidel(b,x,x0,a,c,bndcnd)
+    subroutine lin_sol(b,x,x0,a,c,bndcnd)
         procedure(set_bnd) :: bndcnd
         integer, intent(in) :: b
         real(sp), intent(inout), dimension(0:,0:) :: x
@@ -65,7 +65,7 @@ module solvers
    !         x_av0 = x_av
         end do
         !write(*,'(a1,i1,a1,4(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),abs(x_av-x_av),k
-    end subroutine lin_sol_gaussseidel
+    end subroutine lin_sol
 
 
     subroutine particle_tracer(x,y,i,j,u,v)
@@ -108,7 +108,7 @@ module solvers
         L = size(x,1)-2
         M = size(x,2)-2
         a = dt*diff/(h**2._sp)
-        call lin_sol_gaussseidel(b,x,x0,a,1.0_sp+4.0_sp*a,bndcnd)  
+        call lin_sol(b,x,x0,a,1.0_sp+4.0_sp*a,bndcnd)  
     end subroutine diffuse
     
     subroutine advect(b, d, d0, u, v, bndcnd)
@@ -153,7 +153,7 @@ module solvers
         ! dirichlet conditions on pressure and div(u)
         k = 1
         1020 call bndcnd(2,div); call bndcnd(0,p)
-        call lin_sol_gaussseidel(0,p,div,1.0_sp,4.0_sp,bndcnd)
+        call lin_sol(0,p,div,1.0_sp,4.0_sp,bndcnd)
         do j=1,M
             do i=1,L
                 u(i,j) = u(i,j) - 0.5*(p(i+1,j)-p(i-1,j))/h
