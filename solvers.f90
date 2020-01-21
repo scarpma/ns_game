@@ -161,7 +161,7 @@ module solvers
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout), dimension(0:,0:) :: x, x0, u, v
         real(sp), intent(in) :: diff
-        call add_source(x,x0)
+        !call add_source(x,x0)
         call diffuse(0,x0,x,diff,bndcnd)
         call advect(0,x,x0,u,v,bndcnd)
     end subroutine density_step
@@ -173,13 +173,24 @@ module solvers
         integer :: L, M
         L = size(u,1)-2
         M = size(u,2)-2
-        call add_source(u,u0)
-        call add_source(v,v0)
+        !!call add_source(u,u0) assuming forces in u0 and v0
+        !!call add_source(v,v0)
+        !call diffuse(1,u0,u,visc,bndcnd)
+        !call diffuse(2,v0,v,visc,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+        !call project(u0,v0,p,div,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+        !call advect(1,u,u0,u0,v0,bndcnd)
+        !call advect(2,v,v0,u0,v0,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u,v)
+        !call project(u,v,p,div,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+
+        !call add_source(u,u0) assuming forces in u0 and v0
+        !call add_source(v,v0)
         call advect(1,u0,u,u,v,bndcnd)
         call advect(2,v0,v,u,v,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u,v)
-        call project(u0,v0,p,div,bndcnd)
-        !call bnd_cerchio(xc,yc,rc,u0,v0)
         call diffuse(1,u,u0,visc,bndcnd)
         call diffuse(2,v,v0,visc,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u0,v0)

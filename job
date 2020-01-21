@@ -1,4 +1,4 @@
 make
-./ns 100 100 20000 10
+./ns 50 50 20000 1 1
 ./pv
 gnuplot plot_profiles -persistent
