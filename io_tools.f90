@@ -184,15 +184,14 @@ module io_tools
     
     end subroutine out_paraview_2D_dens
 
-    subroutine print_parameters(L, h, dt, simtime, diff, visc, ReL)
-        real(sp), intent(in) :: L, h, dt, simtime, diff, visc, ReL
+    subroutine print_parameters(L, h, dt, simtime, diff, ReL)
+        real(sp), intent(in) :: L, h, dt, simtime, diff, ReL
         write(*,"(' Parametri:')")
         write(*,"(' L=',ES9.3)") L
         write(*,"(' h=',ES9.3)") h
         write(*,"(' dt=',ES9.3)") dt
         write(*,"(' simtime=',ES9.3)") simtime
         write(*,"(' diff=',ES9.3)") diff
-        write(*,"(' visc=',ES9.3)") visc
         write(*,"(' ReL=',ES9.3)") ReL
         !write(*,"(' xc=',ES9.3)") real(xc)*h
         !write(*,"(' yc=',ES9.3)") real(yc)*h

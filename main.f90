@@ -7,7 +7,7 @@ program ns_game
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
     integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
-    real(sp) :: LL, diff, visc, simtime, ReL, inizio, fine, u_in
+    real(sp) :: LL, diff, simtime, ReL, inizio, fine
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
     
@@ -15,7 +15,7 @@ program ns_game
      
     ! CARICO INPUT DA LINEA DI COMANDO
     if (command_argument_count()<4) then
-        print*, "ns_game L M Niter in_velocity [continue_last_sim]"
+        print*, "ns_game L M Niter ReL [continue_last_sim]"
         stop
     end if
     call get_command_argument(1, argv)
@@ -25,7 +25,7 @@ program ns_game
     call get_command_argument(3, argv)
     read(argv, *) Niter
     call get_command_argument(4, argv)
-    read(argv, *) u_in
+    read(argv, *) ReL
 
     print*, "Stable Fluid Simulator 1.0"
     
@@ -36,19 +36,18 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.0002*u_in/LL
+    dt = 0.0002 ! should be adimensional, so changes with reynolds
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
-    visc = 0.01_sp
-    ReL = LL*u_in/visc
+    
     !xc = L/5
     !yc = M/2
     !rc = M/5
-    if (rc > xc + 2) then
-        print*, "Cerchio troppo vicino alle bc"
-        stop
-    end if
-    call print_parameters(LL, h, dt, simtime, diff, visc, ReL)
+    !if (rc > xc + 2) then
+    !    print*, "Cerchio troppo vicino alle bc"
+    !    stop
+    !end if
+    call print_parameters(LL, h, dt, simtime, diff, ReL)
  
     ! ALLOCO MEMORIA
     print*, "Alloco memoria e inizializzo variabili"
