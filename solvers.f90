@@ -52,7 +52,7 @@ module solvers
         L = size(x,1)-2
         M = size(x,2)-2
         
-        do k=1,20
+        do k=1,10
    !         x_av = 0._sp
             do j=1,M
                 do i=1,L
@@ -66,6 +66,34 @@ module solvers
         end do
         !write(*,'(a1,i1,a1,4(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),abs(x_av-x_av),k
     end subroutine lin_sol_gaussseidel
+
+
+    subroutine particle_tracer(x,y,i,j,u,v)
+        integer, intent(in) :: i, j
+        real(sp), intent(in), dimension(0:,0:) :: u, v
+        real(sp), intent(inout) :: x, y
+        x = i - dt*u(i,j)/h
+        y = j - dt*v(i,j)/h
+    end subroutine particle_tracer
+
+    function interpolate(d0,x,y)
+        real(sp), intent(in), dimension(0:,0:) :: d0
+        real(sp), intent(in) :: x, y
+        real(sp) :: interpolate, s0, t0, s1, t1
+        integer :: i0, j0, i1, j1
+        
+        i0 = int(x)
+        i1 = i0 + 1
+        j0 = int(y)
+        j1 = j0 + 1
+
+        s1 = x - i0
+        s0 = 1._sp - s1
+        t1 = y - j0
+        t0 = 1._sp - t1
+
+        interpolate = s0*(t0*d0(i0,j0)+t1*d0(i0,j1))+s1*(t0*d0(i1,j0)+t1*d0(i1,j1))
+    end function interpolate
 
     subroutine diffuse(b, x, x0, diff,bndcnd)
         procedure(set_bnd) :: bndcnd
@@ -89,32 +117,21 @@ module solvers
         real(sp), intent(inout), dimension(0:,0:) :: d
         real(sp), intent(in), dimension(0:,0:) :: d0, u, v
 
-        real(sp) :: x, y, s0, t0, s1, t1, dt0, LL, MM
-        integer :: i, j, i0, j0, i1, j1, L, M
+        real(sp) :: x, y, LL, MM
+        integer :: i, j, L, M
 
         L = size(d,1)-2
         M = size(d,2)-2
-        i0 = 0; j0 = 0; i1 = 0; j1 = 0
         LL = real(L,sp)
         MM = real(M,sp)
-        dt0 = dt/h
         do j=1,M
             do i=1,L
-                x = i - dt0*u(i,j)
-                y = j - dt0*v(i,j)
+                call particle_tracer(x,y,i,j,u,v)
                 if (x < 0.5_sp)      x = 0.5_sp
                 if (x > LL + 0.5_sp) x = LL + 0.5_sp 
-                i0 = int(x)
-                i1 = i0 + 1
                 if (y < 0.5_sp)      y = 0.5_sp
                 if (y > MM + 0.5_sp) y = MM + 0.5_sp
-                j0 = int(y)
-                j1 = j0 + 1
-                s1 = x - i0
-                s0 = 1._sp - s1
-                t1 = y - j0
-                t0 = 1._sp - t1
-                d(i,j) = s0*(t0*d0(i0,j0)+t1*d0(i0,j1))+s1*(t0*d0(i1,j0)+t1*d0(i1,j1))
+                d(i,j) = interpolate(d0,x,y)
             end do
         end do
         call bndcnd(b,d)
@@ -144,16 +161,16 @@ module solvers
             end do
         end do
         ! controllo se la divergenza è nulla
-        !do j=1,M
-        !    do i=1,L
-        !        div(i,j) = -0.5_sp*h*(u(i+1,j)-u(i-1,j)+v(i,j+1)-v(i,j-1))
-        !    end do
-        !end do
-        !divmax = maxval(abs(div(:,:)))
-        !if (divmax > 0.01_sp) then
-        !    k = k + 1
-        !    goto 1020
-        !end if
+        do j=1,M
+            do i=1,L
+                div(i,j) = -0.5_sp*h*(u(i+1,j)-u(i-1,j)+v(i,j+1)-v(i,j-1))
+            end do
+        end do
+        divmax = maxval(abs(div(:,:)))
+        if (divmax > 0.01_sp) then
+            k = k + 1
+            goto 1020
+        end if
         !print*, k*40
     end subroutine project
     

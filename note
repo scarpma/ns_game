@@ -1,5 +1,4 @@
+1
+implementare un tracciatore migliore di eulero in "advect"
 2
-implementare l'adimensionalizzazione: mettere 1/re al posto della viscosità
-
-3
-implementare il controllo sulla convergenza degli algoritmi iterativi (k=20 giusto?)
+implementare un buon controllo sulla convergenza di gauss-seidel in "diffuse"
