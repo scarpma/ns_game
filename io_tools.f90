@@ -238,7 +238,7 @@ module io_tools
             u0 = u
             v0 = v
             ! IMPONGO CONDIZIONI AL BORDO SULLA C.I.
-            call set_all_bnd(x,u,v,x0,u0,v0,set_bnd_box)
+            call set_all_bnd(x,u,v,x0,u0,v0,bndcnd)
             u1 = u
             v1 = v
             ! SCRIVO CONDIZIONI INIZIALI USATE

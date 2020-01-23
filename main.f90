@@ -6,6 +6,7 @@ program ns_game
     implicit none
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
+    complex(sp), allocatable, dimension(:,:) :: ut, vt
     integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
     real(sp) :: LL, diff, simtime, ReL, inizio, fine
     character(64) :: argv, path
@@ -56,13 +57,16 @@ program ns_game
     allocate(u1(0:L+1,0:M+1), v1(0:L+1,0:M+1), stat=err)
     allocate(x(0:L+1,0:M+1), x0(0:L+1,0:M+1), stat=err)
     allocate(p(0:L+1,0:M+1), div(0:L+1,0:M+1), stat=err)
+    allocate(ut(0:L+1,0:M+1), vt(0:L+1,0:M+1), stat=err)
     if (err > 0) then
          print*, "allocation error"
          stop
     end if
 
     ! INIZIALIZZO VARIABILI
-    call init_variables(x0,x,u0,u,u1,v0,v,v1,set_bnd_box)
+    call init_variables(x0,x,u0,u,u1,v0,v,v1,set_bnd_per)
+    ut = 0.
+    vt = 0.
     
     ! SCRIVO DATI INIZIALI
     i = 0
@@ -73,15 +77,15 @@ program ns_game
 
     ! INTEGRO
     print*, "Integro "
-    j = 0
+    j = 1
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        call vel_step(u,v,u0,v0,p,div,1.0_sp/ReL,set_bnd_box)
+        call vel_step(u,v,u0,v0,ut,vt,p,div,1.0_sp/ReL,set_bnd_per)
         !call density_step(x,x0,u,v,diff,set_bnd_box)
         call take_n_snapshots(30,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)
         call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
-        if (conv_check == 1) exit
+        !if (conv_check == 1) exit
     end do
     
     ! SCRIVO FILE OUTPUT

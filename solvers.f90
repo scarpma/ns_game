@@ -1,5 +1,6 @@
 module solvers
     use precision
+    use fourier
     use bc
     implicit none
 
@@ -173,7 +174,48 @@ module solvers
         end if
         !print*, k*40
     end subroutine project
-    
+
+    subroutine diffuse_and_project(ut,vt,visc,bndcnd)
+        procedure(set_bnd) :: bndcnd
+        complex(sp), intent(inout), dimension(:,:) :: ut, vt
+        real(sp), intent(in) :: visc
+        
+        real(sp) :: k, k1, k2
+        integer :: i, j, L, M
+        
+        L = size(ut,1)
+        M = size(ut,2)
+        ! DIFFUSE
+        do j=1,M/2+1
+            do i=1,L
+                k1 = 0.5*i
+                if (j>=M/2+1) then
+                    k2 = j
+                else
+                    k2 = j - M
+                end if
+                k = k1**2+k2**2
+                ut(i,j) = ut(i,j) / (1+visc*dt*k)
+                vt(i,j) = vt(i,j) / (1+visc*dt*k)
+            end do
+        end do
+        ! PROJECT
+        do j=1,M/2+1
+            do i=1,L
+                k1 = 0.5*i
+                if (j>=M/2+1) then
+                    k2 = j
+                else
+                    k2 = j - M
+                end if
+                k = k1**2 + k2**2
+                ut(i,j) = ut(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k1/k
+                vt(i,j) = vt(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k2/k
+            end do
+        end do
+        
+    end subroutine diffuse_and_project
+
     subroutine density_step(x, x0, u, v, diff, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout), dimension(0:,0:) :: x, x0, u, v
@@ -183,9 +225,10 @@ module solvers
         call advect(0,x,x0,u,v,bndcnd)
     end subroutine density_step
 
-    subroutine vel_step(u,v,u0,v0,p,div,visc,bndcnd)
+    subroutine vel_step(u,v,u0,v0,ut,vt,p,div,visc,bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout), dimension(0:,0:) :: u, v, u0, v0, p, div
+        complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         integer :: L, M
         L = size(u,1)-2
@@ -208,11 +251,16 @@ module solvers
         call advect(1,u0,u,u,v,bndcnd)
         call advect(2,v0,v,u,v,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u,v)
-        call diffuse(1,u,u0,visc,bndcnd)
-        call diffuse(2,v,v0,visc,bndcnd)
-        !call bnd_cerchio(xc,yc,rc,u0,v0)
-        call project(u,v,p,div,bndcnd)
-        !call bnd_cerchio(xc,yc,rc,u0,v0)
+        call FFTp(1,u,ut)
+        call FFTp(1,v,vt)
+        call diffuse_and_project(ut,vt,visc,bndcnd)
+        !call diffuse(1,u,u0,visc,bndcnd)
+        !call diffuse(2,v,v0,visc,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+        !call project(u,v,p,div,bndcnd)
+        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+        call FFTp(-1,u,ut)
+        call FFTp(-1,v,vt)
     end subroutine vel_step
     
     function errmax(u,u1)
