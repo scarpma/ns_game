@@ -1,9 +1,11 @@
 module solvers
     use precision
-    use fourier
     use bc
+    use, intrinsic :: iso_c_binding
     implicit none
+    include "fftw3.f03"
 
+    type(c_ptr), public :: planr2c, planc2r
     real(sp), parameter :: conviter = 0.005
 
     interface 
@@ -118,18 +120,18 @@ module solvers
         real(sp), intent(inout), dimension(0:,0:) :: d
         real(sp), intent(in), dimension(0:,0:) :: d0, u, v
 
-        real(sp) :: x, y, LL, MM
+        real(sp) :: x, y, LLL, MM
         integer :: i, j, L, M
 
         L = size(d,1)-2
         M = size(d,2)-2
-        LL = real(L,sp)
+        LLL = real(L,sp)
         MM = real(M,sp)
         do j=1,M
             do i=1,L
                 call particle_tracer(x,y,i,j,u,v)
                 if (x < 0.5_sp)      x = 0.5_sp
-                if (x > LL + 0.5_sp) x = LL + 0.5_sp 
+                if (x > LLL + 0.5_sp) x = LLL + 0.5_sp 
                 if (y < 0.5_sp)      y = 0.5_sp
                 if (y > MM + 0.5_sp) y = MM + 0.5_sp
                 d(i,j) = interpolate(d0,x,y)
@@ -175,9 +177,25 @@ module solvers
         !print*, k*40
     end subroutine project
 
+    !subroutine compk(k1,k2,i,j,L,M,LL)
+    !    integer, intent(in) :: i, j, L, M           
+    !    real(sp), intent(in) :: LL              !lunghezza fisica box
+    !    real(sp), intent(inout) :: k1, k2       
+    !    if (i<=L/2) then
+    !        k1 = real(i,sp)*2.0_sp*pi/LL
+    !    else
+    !        k1 = real(i-L,sp)*2.0_sp*pi/LL
+    !    end if
+    !    if (j<=M/2) then
+    !        k2 = real(j,sp)*2.0_sp*pi/LL
+    !    else
+    !        k2 = real(j-M,sp)*2.0_sp*pi/LL
+    !    end if
+    !end subroutine compk
+
     subroutine diffuse_and_project(ut,vt,visc,bndcnd)
         procedure(set_bnd) :: bndcnd
-        complex(sp), intent(inout), dimension(:,:) :: ut, vt
+        complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         
         real(sp) :: k, k1, k2
@@ -186,33 +204,34 @@ module solvers
         L = size(ut,1)
         M = size(ut,2)
         ! DIFFUSE
-        do j=1,M/2+1
-            do i=1,L
-                k1 = 0.5*i
-                if (j>=M/2+1) then
-                    k2 = j
-                else
-                    k2 = j - M
-                end if
-                k = k1**2+k2**2
-                ut(i,j) = ut(i,j) / (1+visc*dt*k)
-                vt(i,j) = vt(i,j) / (1+visc*dt*k)
+        do j=0,M/2
+            do i=0,L-1
+                k1 = real(i,sp)*2.0_sp*pi/LL
+                k2 = real(j,sp)*2.0_sp*pi/LL
+                k = k1**2._sp+k2**2._sp
+                ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
             end do
         end do
-        ! PROJECT
-        do j=1,M/2+1
-            do i=1,L
-                k1 = 0.5*i
-                if (j>=M/2+1) then
-                    k2 = j
-                else
-                    k2 = j - M
-                end if
-                k = k1**2 + k2**2
-                ut(i,j) = ut(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k1/k
-                vt(i,j) = vt(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k2/k
+        do j=M/2+1,M-1
+            do i=0,L-1
+                k1 = real(i,sp)*2.0_sp*pi/LL
+                k2 = real(j-M,sp)*2.0_sp*pi/LL
+                k = k1**2._sp+k2**2._sp
+                ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
             end do
         end do
+        !! PROJECT
+        !do j=1,M/2+1
+        !    do i=1,L
+        !        call compk(k1,k2,i,j,L,M,1.0_sp)
+        !        k = k1**2 + k2**2._sp
+        ! SBAGLIATO: SERVE VARIABILE TEMPORANEA
+        !        ut(i,j) = ut(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k1/k
+        !        vt(i,j) = vt(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k2/k
+        !    end do
+        !end do
         
     end subroutine diffuse_and_project
 
@@ -231,8 +250,8 @@ module solvers
         complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         integer :: L, M
-        L = size(u,1)-2
-        M = size(u,2)-2
+        L = size(u,1)
+        M = size(u,2)
         !!call add_source(u,u0) assuming forces in u0 and v0
         !!call add_source(v,v0)
         !call diffuse(1,u0,u,visc,bndcnd)
@@ -251,16 +270,18 @@ module solvers
         call advect(1,u0,u,u,v,bndcnd)
         call advect(2,v0,v,u,v,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u,v)
-        call FFTp(1,u,ut)
-        call FFTp(1,v,vt)
+        call fftw_execute_dft_r2c(planr2c,u0,ut)
+        call fftw_execute_dft_r2c(planr2c,v0,vt)
         call diffuse_and_project(ut,vt,visc,bndcnd)
         !call diffuse(1,u,u0,visc,bndcnd)
         !call diffuse(2,v,v0,visc,bndcnd)
         !!call bnd_cerchio(xc,yc,rc,u0,v0)
         !call project(u,v,p,div,bndcnd)
         !!call bnd_cerchio(xc,yc,rc,u0,v0)
-        call FFTp(-1,u,ut)
-        call FFTp(-1,v,vt)
+        call fftw_execute_dft_c2r(planc2r,ut,u)
+        u = u / (L*M)
+        call fftw_execute_dft_c2r(planc2r,vt,v)
+        v = v / (L*M)
     end subroutine vel_step
     
     function errmax(u,u1)

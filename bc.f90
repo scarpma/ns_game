@@ -101,16 +101,10 @@ module bc
         L = size(x,1) - 2
         M = size(x,2) - 2
         
-        if (b==1) then
-            x(L+1,1:M) = 0._sp
-            x(1:L,M+1) = 1._sp
-        end if
-        if (b==2) then
-            x(L+1,1:M) = 0._sp
-            x(1:L,M+1) = 0._sp
-        end if
-        x(0,1:M) = x(L+1,1:M)
-        x(1:L,0) = x(1:L,M+1)
+        x(L+1,1:M) = x(1,1:M)
+        x(1:L,M+1) = x(1:L,1)
+        x(0,1:M) = x(L,1:M)
+        x(1:L,0) = x(1:L,M)
 
         x(0,0) = 0.5_sp*(x(1,0) + x(0,1))
         x(0,M+1) = 0.5_sp*(x(1,M+1) + x(0,M+1))
@@ -184,8 +178,9 @@ module bc
         do j=1,M
             do i=1,L
                 if((i-i0)**2+(j-j0)**2 <= r**2) then
-                    d(i,j) = 10.0_sp
-                    u(i,j) = 10.0_sp
+                    !d(i,j) = 10.0_sp
+                    u(i,j) = 1.0_sp
+                    v(i,j) = 1.0_sp
                 end if
             end do
         end do
