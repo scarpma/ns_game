@@ -98,25 +98,15 @@ module bc
 
         integer :: L, M
 
-        L = size(x,1) - 2
-        M = size(x,2) - 2
+        L = size(x,1) - 1
+        M = size(x,2) - 1
         
         select case(b)
-        
-        case (1:2)
-        x(1:L,M+1) = x(1:L,1)   !n
-        x(1:L,0) = x(1:L,M)     !s
-        x(L+1,1:M) = x(1,1:M)   !e
-        x(0,1:M) = x(L,1:M)     !w
-        !x(1:L,M+1) = x(1:L,0)   !n-s
-        !x(L+1,1:M) = x(0,1:M)   !e-w
-
-        x(0,0) = 0.5_sp*(x(1,0) + x(0,1))
-        x(0,M+1) = 0.5_sp*(x(1,M+1) + x(0,M+1))
-        x(L+1,0) = 0.5_sp*(x(L,0) + x(L+1,1))
-        x(L+1,M+1) = 0.5_sp*(x(L,M+1) + x(L+1,M))
-        case(0)
-        print *, "case 0 not defined"
+            case (1:2)
+                x(0:L,0) = x(0:L,M)   !n-s
+                x(0,0:M) = x(L,0:M)     !w-e
+            case(0)
+                print *, "case 0 not defined"
         end select 
         
     end subroutine set_bnd_per

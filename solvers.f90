@@ -140,6 +140,34 @@ module solvers
         call bndcnd(b,d)
     end subroutine advect
 
+    subroutine advect_per(b, d, d0, u, v, bndcnd)
+        procedure(set_bnd) :: bndcnd
+        integer, intent(in) :: b
+        real(sp), intent(inout), dimension(0:,0:) :: d
+        real(sp), intent(in), dimension(0:,0:) :: d0, u, v
+
+        real(sp) :: x, y, LLL, MM
+        integer :: i, j, L, M
+
+        L = size(d,1)
+        M = size(d,2)
+        !LLL = real(L,sp)
+        LLL = real(L-1,sp)
+        !MM = real(M,sp)
+        MM = real(M-1,sp)
+        do j=1,M
+            do i=1,L
+                call particle_tracer(x,y,i,j,u,v)
+                if (x < 0._sp)      x = LLL - x!if (x < 0.5_sp)      x = 0.5_sp
+                if (x > LLL)        x = x - LLL!if (x > LLL + 0.5_sp) x = LLL + 0.5_sp 
+                if (y < 0.0_sp)     y = MM - y!if (y < 0.5_sp)      y = 0.5_sp
+                if (y > MM)         y = y - MM!if (y > MM + 0.5_sp) y = MM + 0.5_sp
+                d(i,j) = interpolate(d0,x,y)
+            end do
+        end do
+        !call bndcnd(b,d)
+    end subroutine advect_per
+
     subroutine project(u, v, p, div, bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout) :: u(0:,0:), v(0:,0:), p(0:,0:), div(0:,0:)
@@ -209,29 +237,12 @@ module solvers
                 k1 = real(i,sp)*2.0_sp*pi/LL
                 k2 = real(j,sp)*2.0_sp*pi/LL
                 k = k1**2._sp+k2**2._sp
-                ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
-                vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
-            end do
-        end do
-        do j=M/2+1,M-1
-            do i=0,L-1
-                k1 = real(i,sp)*2.0_sp*pi/LL
-                k2 = real(j-M,sp)*2.0_sp*pi/LL
-                k = k1**2._sp+k2**2._sp
-                ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
-                vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
-            end do
-        end do
-        ! PROJECT
-        do j=0,M/2
-            do i=0,L-1
-                k1 = real(i,sp)*2.0_sp*pi/LL
-                k2 = real(j,sp)*2.0_sp*pi/LL
-                k = k1**2._sp+k2**2._sp
+                !ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                !vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
                 if (k==0._sp) cycle
                 ww = k1*ut(i,j)+k2*vt(i,j)
-                ut(i,j) = ut(i,j)-ww*k1/k
-                vt(i,j) = vt(i,j)-ww*k2/k
+                ut(i,j) = (ut(i,j)-ww*k1/k)*exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                vt(i,j) = (vt(i,j)-ww*k2/k)*exp(-k*visc*dt)! / (1._sp+visc*dt*k)
             end do
         end do
         do j=M/2+1,M-1
@@ -239,11 +250,35 @@ module solvers
                 k1 = real(i,sp)*2.0_sp*pi/LL
                 k2 = real(j-M,sp)*2.0_sp*pi/LL
                 k = k1**2._sp+k2**2._sp
+                !ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                !vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
                 ww = k1*ut(i,j)+k2*vt(i,j)
-                ut(i,j) = ut(i,j)-ww*k1/k
-                vt(i,j) = vt(i,j)-ww*k2/k
+                ut(i,j) = (ut(i,j)-ww*k1/k)*exp(-k*visc*dt)! / (1._sp+visc*dt*k)
+                vt(i,j) = (vt(i,j)-ww*k2/k)*exp(-k*visc*dt)! / (1._sp+visc*dt*k)
             end do
         end do
+        !! PROJECT
+        !do j=0,M/2
+        !    do i=0,L-1
+        !        k1 = real(i,sp)*2.0_sp*pi/LL
+        !        k2 = real(j,sp)*2.0_sp*pi/LL
+        !        k = k1**2._sp+k2**2._sp
+        !        if (k==0._sp) cycle
+        !        ww = k1*ut(i,j)+k2*vt(i,j)
+        !        ut(i,j) = ut(i,j)-ww*k1/k
+        !        vt(i,j) = vt(i,j)-ww*k2/k
+        !    end do
+        !end do
+        !do j=M/2+1,M-1
+        !    do i=0,L-1
+        !        k1 = real(i,sp)*2.0_sp*pi/LL
+        !        k2 = real(j-M,sp)*2.0_sp*pi/LL
+        !        k = k1**2._sp+k2**2._sp
+        !        ww = k1*ut(i,j)+k2*vt(i,j)
+        !        ut(i,j) = ut(i,j)-ww*k1/k
+        !        vt(i,j) = vt(i,j)-ww*k2/k
+        !    end do
+        !end do
         
     end subroutine diffuse_and_project
 
@@ -262,25 +297,14 @@ module solvers
         complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         integer :: L, M
+
         L = size(u,1)
         M = size(u,2)
-        !!call add_source(u,u0) assuming forces in u0 and v0
-        !!call add_source(v,v0)
-        !call diffuse(1,u0,u,visc,bndcnd)
-        !call diffuse(2,v0,v,visc,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u0,v0)
-        !call project(u0,v0,p,div,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u0,v0)
-        !call advect(1,u,u0,u0,v0,bndcnd)
-        !call advect(2,v,v0,u0,v0,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u,v)
-        !call project(u,v,p,div,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u0,v0)
 
         call add_source(u,u0) !assuming forces in u0 and v0
         call add_source(v,v0)
-        call advect(1,u0,u,u,v,bndcnd)
-        call advect(2,v0,v,u,v,bndcnd)
+        call advect_per(1,u0,u,u,v,bndcnd)
+        call advect_per(2,v0,v,u,v,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u,v)
         call fftw_execute_dft_r2c(planr2c,u0,ut)
         call fftw_execute_dft_r2c(planr2c,v0,vt)

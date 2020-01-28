@@ -92,7 +92,7 @@ program ns_game
         u0(L-3,1:M) = -200*sin(2.0_sp*10*dt*i/simtime)
 
         !call density_step(x,x0,u,v,diff,set_bnd_box)
-        call take_n_snapshots(30,x,u,v,i,j,Niter)
+        call take_n_snapshots(60,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)
         call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
         if (conv_check == 1) exit
