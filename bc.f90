@@ -101,16 +101,24 @@ module bc
         L = size(x,1) - 2
         M = size(x,2) - 2
         
-        x(L+1,1:M) = x(1,1:M)
-        x(1:L,M+1) = x(1:L,1)
-        x(0,1:M) = x(L,1:M)
-        x(1:L,0) = x(1:L,M)
+        select case(b)
+        
+        case (1:2)
+        x(1:L,M+1) = x(1:L,1)   !n
+        x(1:L,0) = x(1:L,M)     !s
+        x(L+1,1:M) = x(1,1:M)   !e
+        x(0,1:M) = x(L,1:M)     !w
+        !x(1:L,M+1) = x(1:L,0)   !n-s
+        !x(L+1,1:M) = x(0,1:M)   !e-w
 
         x(0,0) = 0.5_sp*(x(1,0) + x(0,1))
         x(0,M+1) = 0.5_sp*(x(1,M+1) + x(0,M+1))
         x(L+1,0) = 0.5_sp*(x(L,0) + x(L+1,1))
         x(L+1,M+1) = 0.5_sp*(x(L,M+1) + x(L+1,M))
-
+        case(0)
+        print *, "case 0 not defined"
+        end select 
+        
     end subroutine set_bnd_per
 
     !subroutine set_bnd_box(b,x)
@@ -178,7 +186,6 @@ module bc
         do j=1,M
             do i=1,L
                 if((i-i0)**2+(j-j0)**2 <= r**2) then
-                    !d(i,j) = 10.0_sp
                     u(i,j) = 1.0_sp
                     v(i,j) = 1.0_sp
                 end if

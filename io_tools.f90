@@ -233,7 +233,7 @@ module io_tools
             x = 0._sp
             u = 0._sp
             v = 0._sp
-            call init_sources(x,u,v)
+            !call init_sources(x,u,v)
             x0 = x
             u0 = u
             v0 = v

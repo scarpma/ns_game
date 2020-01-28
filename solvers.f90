@@ -198,7 +198,7 @@ module solvers
         complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         
-        real(sp) :: k, k1, k2
+        real(sp) :: k, k1, k2, ww
         integer :: i, j, L, M
         
         L = size(ut,1)
@@ -222,16 +222,28 @@ module solvers
                 vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
             end do
         end do
-        !! PROJECT
-        !do j=1,M/2+1
-        !    do i=1,L
-        !        call compk(k1,k2,i,j,L,M,1.0_sp)
-        !        k = k1**2 + k2**2._sp
-        ! SBAGLIATO: SERVE VARIABILE TEMPORANEA
-        !        ut(i,j) = ut(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k1/k
-        !        vt(i,j) = vt(i,j)-(k1*ut(i,j)+k2*vt(i,j))*k2/k
-        !    end do
-        !end do
+        ! PROJECT
+        do j=0,M/2
+            do i=0,L-1
+                k1 = real(i,sp)*2.0_sp*pi/LL
+                k2 = real(j,sp)*2.0_sp*pi/LL
+                k = k1**2._sp+k2**2._sp
+                if (k==0._sp) cycle
+                ww = k1*ut(i,j)+k2*vt(i,j)
+                ut(i,j) = ut(i,j)-ww*k1/k
+                vt(i,j) = vt(i,j)-ww*k2/k
+            end do
+        end do
+        do j=M/2+1,M-1
+            do i=0,L-1
+                k1 = real(i,sp)*2.0_sp*pi/LL
+                k2 = real(j-M,sp)*2.0_sp*pi/LL
+                k = k1**2._sp+k2**2._sp
+                ww = k1*ut(i,j)+k2*vt(i,j)
+                ut(i,j) = ut(i,j)-ww*k1/k
+                vt(i,j) = vt(i,j)-ww*k2/k
+            end do
+        end do
         
     end subroutine diffuse_and_project
 
@@ -265,8 +277,8 @@ module solvers
         !call project(u,v,p,div,bndcnd)
         !!call bnd_cerchio(xc,yc,rc,u0,v0)
 
-        !call add_source(u,u0) assuming forces in u0 and v0
-        !call add_source(v,v0)
+        call add_source(u,u0) !assuming forces in u0 and v0
+        call add_source(v,v0)
         call advect(1,u0,u,u,v,bndcnd)
         call advect(2,v0,v,u,v,bndcnd)
         !call bnd_cerchio(xc,yc,rc,u,v)
@@ -282,6 +294,8 @@ module solvers
         u = u / (L*M)
         call fftw_execute_dft_c2r(planc2r,vt,v)
         v = v / (L*M)
+        call bndcnd(1,u)
+        call bndcnd(2,v)
     end subroutine vel_step
     
     function errmax(u,u1)

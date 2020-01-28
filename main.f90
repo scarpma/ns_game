@@ -7,7 +7,7 @@ program ns_game
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
     complex(sp), allocatable, dimension(:,:) :: ut, vt
-    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
+    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check = 0
     real(sp) :: diff, simtime, ReL, inizio, fine
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
@@ -38,7 +38,7 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.0002 ! should be adimensional, so changes with reynolds
+    dt = 0.00001_sp ! should be adimensional, so changes with reynolds
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
     
@@ -66,8 +66,8 @@ program ns_game
 
     ! INIZIALIZZO VARIABILI
     ! PREPARO LIBRERIA FFTW3
-    planr2c = fftw_plan_dft_r2c_2d(M+2,L+2,v,vt,FFTW_PATIENT)
-    planc2r = fftw_plan_dft_c2r_2d(M+2,L+2,vt,v,FFTW_PATIENT)
+    planr2c = fftw_plan_dft_r2c_2d(M+2,L+2,v,vt,FFTW_ESTIMATE)
+    planc2r = fftw_plan_dft_c2r_2d(M+2,L+2,vt,v,FFTW_ESTIMATE)
     call init_variables(x0,x,u0,u,u1,v0,v,v1,set_bnd_per)
     ut = complex(0._sp,0._sp)
     vt = complex(0._sp,0._sp)
@@ -85,11 +85,17 @@ program ns_game
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
         call vel_step(u,v,u0,v0,ut,vt,p,div,1.0_sp/ReL,set_bnd_per)
+
+        u0 = 0._sp
+        v0 = 0._sp
+        u0(4,1:M) = 200*sin(2.0_sp*10*dt*i/simtime)
+        u0(L-3,1:M) = -200*sin(2.0_sp*10*dt*i/simtime)
+
         !call density_step(x,x0,u,v,diff,set_bnd_box)
-        call take_n_snapshots(Niter-1,x,u,v,i,j,Niter)
+        call take_n_snapshots(30,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)
         call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
-        !if (conv_check == 1) exit
+        if (conv_check == 1) exit
     end do
     
     ! SCRIVO FILE OUTPUT
