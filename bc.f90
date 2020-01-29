@@ -103,8 +103,8 @@ module bc
         
         select case(b)
             case (1:2)
-                x(0:L,0) = x(0:L,M)   !n-s
-                x(0,0:M) = x(L,0:M)     !w-e
+                !x(0:L,0) = x(0:L,M)   !n-s
+                !x(0,0:M) = x(L,0:M)     !w-e
             case(0)
                 print *, "case 0 not defined"
         end select 
