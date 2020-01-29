@@ -6,9 +6,9 @@ program ns_game
     implicit none
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
-    complex(sp), allocatable, dimension(:,:) :: ut, vt
-    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check = 0
-    real(sp) :: diff, simtime, ReL, inizio, fine
+    complex(sp), allocatable, dimension(:,:) :: ut, vt, fu, fv
+    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check = 0, Nf
+    real(sp) :: diff, simtime, ReL, Ref, Tad, inizio, fine, eps, e_in, eta
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
     
@@ -41,6 +41,25 @@ program ns_game
     dt = 0.00001_sp ! should be adimensional, so changes with reynolds
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
+    k0 = 2._sp*pi/LL
+    sigma = 1000._sp
+    !eps = TL * sigma**2.0_sp
+    eps = 3._sp
+    TL = eps/sigma**2._sp!20*dt
+    print*, "eps=",eps
+    KF2 = 4._sp*(k0*sqrt(2._sp))**2._sp
+    print*, "KF=",sqrt(KF2)
+    call count_forced_modes(Nf,L,M)
+    print*, "Nf=",Nf
+    e_in = 4._sp*Nf*eps
+    print*, "e_in=",e_in
+    eta = (e_in*ReL**3._sp)**(-1._sp/4._sp)
+    print*, "eta=", eta
+    print*, "kf/k0=", sqrt(KF2)/k0, "eta*k0=", eta*k0!, "kmax/k0=", real(L+2)
+    Ref = eps**(1./3.) * k0**(-4./3.) * ReL
+    print*, "Ref=",Ref
+    Tad = TL * eps * k0**(2./3.)
+    print*, "Tad=", Tad
     
     !xc = L/5
     !yc = M/2
@@ -59,6 +78,7 @@ program ns_game
     allocate(x(0:L+1,0:M+1), x0(0:L+1,0:M+1), stat=err)
     allocate(p(0:L+1,0:M+1), div(0:L+1,0:M+1), stat=err)
     allocate(ut(0:((L+2)/2),0:M+1), vt(0:((L+2)/2),0:M+1), stat=err)
+    allocate(fu(0:((L+2)/2),0:M+1), fv(0:((L+2)/2),0:M+1), stat=err)
     if (err > 0) then
          print*, "allocation error"
          stop
@@ -84,13 +104,7 @@ program ns_game
     j = 1
     do i=1,Niter-1
         !call get_from_UI(x0,u0,v0)
-        call vel_step(u,v,u0,v0,ut,vt,p,div,1.0_sp/ReL,set_bnd_per)
-
-        u0 = 0._sp
-        v0 = 0._sp
-        u0(4,1:M) = 200*sin(2.0_sp*10*dt*i/simtime)
-        u0(L-3,1:M) = -200*sin(2.0_sp*10*dt*i/simtime)
-
+        call vel_step(u,v,u0,v0,ut,vt,fu,fv,p,div,1.0_sp/ReL,set_bnd_per)
         !call density_step(x,x0,u,v,diff,set_bnd_box)
         call take_n_snapshots(60,x,u,v,i,j,Niter)
         call progress(10*(i+1)/Niter)

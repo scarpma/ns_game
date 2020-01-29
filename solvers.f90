@@ -226,7 +226,8 @@ module solvers
         complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
         real(sp), intent(in) :: visc
         
-        real(sp) :: k, k1, k2, ww
+        real(sp) :: k, k1, k2
+        complex(sp) :: ww
         integer :: i, j, L, M
         
         L = size(ut,1)
@@ -234,8 +235,8 @@ module solvers
         ! DIFFUSE
         do j=0,M/2
             do i=0,L-1
-                k1 = real(i,sp)*2.0_sp*pi/LL
-                k2 = real(j,sp)*2.0_sp*pi/LL
+                k1 = real(i,sp)*k0
+                k2 = real(j,sp)*k0
                 k = k1**2._sp+k2**2._sp
                 !ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
                 !vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
@@ -247,8 +248,8 @@ module solvers
         end do
         do j=M/2+1,M-1
             do i=0,L-1
-                k1 = real(i,sp)*2.0_sp*pi/LL
-                k2 = real(j-M,sp)*2.0_sp*pi/LL
+                k1 = real(i,sp)*k0
+                k2 = real(j-M,sp)*k0
                 k = k1**2._sp+k2**2._sp
                 !ut(i,j) = ut(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
                 !vt(i,j) = vt(i,j) * exp(-k*visc*dt)! / (1._sp+visc*dt*k)
@@ -291,29 +292,24 @@ module solvers
         call advect(0,x,x0,u,v,bndcnd)
     end subroutine density_step
 
-    subroutine vel_step(u,v,u0,v0,ut,vt,p,div,visc,bndcnd)
+    subroutine vel_step(u,v,u0,v0,ut,vt,fu,fv,p,div,visc,bndcnd)
         procedure(set_bnd) :: bndcnd
         real(sp), intent(inout), dimension(0:,0:) :: u, v, u0, v0, p, div
-        complex(sp), intent(inout), dimension(0:,0:) :: ut, vt
+        complex(sp), intent(inout), dimension(0:,0:) :: ut, vt, fu, fv
         real(sp), intent(in) :: visc
         integer :: L, M
 
         L = size(u,1)
         M = size(u,2)
 
-        call add_source(u,u0) !assuming forces in u0 and v0
-        call add_source(v,v0)
         call advect_per(1,u0,u,u,v,bndcnd)
         call advect_per(2,v0,v,u,v,bndcnd)
-        !call bnd_cerchio(xc,yc,rc,u,v)
         call fftw_execute_dft_r2c(planr2c,u0,ut)
         call fftw_execute_dft_r2c(planr2c,v0,vt)
         call diffuse_and_project(ut,vt,visc,bndcnd)
-        !call diffuse(1,u,u0,visc,bndcnd)
-        !call diffuse(2,v,v0,visc,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u0,v0)
-        !call project(u,v,p,div,bndcnd)
-        !!call bnd_cerchio(xc,yc,rc,u0,v0)
+
+        call forcing(ut,vt,fu,fv,sigma,TL)
+
         call fftw_execute_dft_c2r(planc2r,ut,u)
         u = u / (L*M)
         call fftw_execute_dft_c2r(planc2r,vt,v)
@@ -348,6 +344,98 @@ module solvers
             v1 = v
         end if
     end subroutine check_uv_maxerr
+
+    subroutine c8_normal(z)
+        real(sp) :: u1, u2
+        complex(sp), intent(inout) :: z
+        call random_number(u1)
+        call random_number(u2)
+        z%re = sqrt(-2._sp * log(u1)) * cos(2._sp * pi * u2)
+        z%im = sqrt(-2._sp * log(u1)) * sin(2._sp * pi * u2)
+    end subroutine c8_normal
+
+    subroutine forcing(ut,vt,fu,fv,sigma,TL)
+        complex(sp), intent(inout), dimension(0:,0:) :: ut, vt, fu, fv
+        real(sp), intent(in) :: sigma, TL
+
+        complex(sp) :: ww
+        real(sp) :: k, k1, k2
+        integer :: L, M, i, j, seed
+        
+        L = size(fu,1)
+        M = size(fu,2)
+        do j=0,M/2
+            do i=0,L-1
+                k1 = real(i,sp)*k0
+                k2 = real(j,sp)*k0
+                k = k1**2._sp+k2**2._sp
+                if (k==0._sp .or. k > KF2) cycle
+                call ou_eulero(TL,sigma,fu(i,j))
+                call ou_eulero(TL,sigma,fv(i,j))
+                ww = k1*fu(i,j)+k2*fv(i,j)
+                ut(i,j) = ut(i,j) + dt*( fu(i,j) - ww*k1/k)
+                vt(i,j) = vt(i,j) + dt*( fv(i,j) - ww*k2/k)
+            end do
+        end do
+        do j=M/2+1,M-1
+            do i=0,L-1
+                k1 = real(i,sp)*k0
+                k2 = real(j-M,sp)*k0
+                k = k1**2._sp+k2**2._sp
+                if (k==0._sp .or. k > KF2) cycle
+                ww = k1*ut(i,j)+k2*vt(i,j)
+                call ou_eulero(TL,sigma,fu(i,j))
+                call ou_eulero(TL,sigma,fv(i,j))
+                ww = k1*fu(i,j)+k2*fv(i,j)
+                ut(i,j) = ut(i,j) + dt*( fu(i,j) - ww*k1/k)
+                vt(i,j) = vt(i,j) + dt*( fv(i,j) - ww*k2/k)
+            end do
+        end do
+        
+    end subroutine forcing
+    
+    subroutine ou_eulero(theta,sigma,z)
+        real(sp), intent(in) :: theta, sigma
+        complex(sp), intent(inout) :: z
+
+        complex(sp) :: dw
+
+        call c8_normal(dw)
+        dw = dw * sqrt ( dt )
+        z = z - dt*theta*z + sigma*dw
+    
+    end subroutine ou_eulero
+
+    subroutine count_forced_modes(Nf,L,M)
+        integer, intent(in) :: L,M
+        integer, intent(inout) :: Nf
+        
+        real(sp) :: k1, k2, k
+        integer :: LL, MM, i, j
+    
+        LL = (L+2)/2
+        MM = M + 1
+        
+        Nf = 0
+        do j=0,M/2
+            do i=0,L-1
+                k1 = real(i,sp)*k0
+                k2 = real(j,sp)*k0
+                k = k1**2._sp+k2**2._sp
+                if (k==0._sp .or. k > KF2) cycle
+                Nf = Nf + 1
+            end do
+        end do
+        do j=M/2+1,M-1
+            do i=0,L-1
+                k1 = real(i,sp)*k0
+                k2 = real(j-M,sp)*k0
+                k = k1**2._sp+k2**2._sp
+                if (k==0._sp .or. k > KF2) cycle
+                Nf = Nf + 1
+            end do
+        end do
+    end subroutine count_forced_modes
 
 
 end module solvers

@@ -19,3 +19,4 @@ clean:
 	rm objs/*.o objs/*.mod $(TARGET)
 
 include make.dep
+
