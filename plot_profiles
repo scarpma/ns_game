@@ -1,9 +1,17 @@
-p 'data/profile_u.dat' u 1:($2) with lines lc "green" t "exp u"
-rep 'data/profile_v.dat' u 1:($2) with lines lc "green" t "exp v"
-rep 'data/ghia_u.dat' u 1:2 with points pt 30 lc "black" t "Re 100"
-rep 'data/ghia_v.dat' u 1:2 with points pt 30 lc "black" t ""
-rep 'data/ghia_u.dat' u 1:3 with points pt 30 lc "blue" t "Re 400"
-rep 'data/ghia_v.dat' u 1:3 with points pt 30 lc "blue" t ""
-rep 'data/ghia_u.dat' u 1:4 with points pt 30 lc "red" t "Re 1000"
-rep 'data/ghia_v.dat' u 1:4 with points pt 30 lc "red" t ""
+set term pdf
+set output "profiles-128-100.pdf"
+set xrange [0:1]
+set yrange [-1:1]
+set key left bottom
+
+
+p 'data/profile_u.dat' u 1:($2) with lines lw 3 lc "green" t "u",\
+  'data/profile_v.dat' u 1:($2) with lines lw 3 lc "red" t "v",\
+  'data/ghia_u.dat' u 1:2 with points pt 30 ps 0.7 lc "black" t "Ghia, Re 100",\
+  'data/ghia_v.dat' u 1:2 with points pt 30 ps 0.7 lc "black" t ""
+
+#rep 'data/ghia_u.dat' u 1:3 with points pt 30 lc "blue" t "Re 400"
+#rep 'data/ghia_v.dat' u 1:3 with points pt 30 lc "blue" t ""
+#rep 'data/ghia_u.dat' u 1:4 with points pt 30 lc "red" t "Re 1000"
+#rep 'data/ghia_v.dat' u 1:4 with points pt 30 lc "red" t ""
 
