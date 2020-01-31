@@ -55,8 +55,7 @@ module bc
         integer, intent(in) :: b
         real(sp), intent(inout), dimension(0:,0:) :: x
 
-        integer :: i, L, M, j
-        integer :: i0, j0, r
+        integer :: L, M
 
         L = size(x,1) - 2
         M = size(x,2) - 2
@@ -143,7 +142,7 @@ module bc
     !end subroutine set_bnd_box
 
     subroutine init_sources(d,u,v)
-        real(sp), dimension(0:,0:), intent(out) :: d, u, v
+        real(sp), dimension(0:,0:), intent(inout) :: d, u, v
         integer :: i, j, L, M
         integer :: i0, j0, r
 
@@ -167,7 +166,7 @@ module bc
     subroutine bnd_cerchio(i0,j0,r,u,v)
         integer, intent(in) :: i0, j0, r ! centro e raggio cerchio  
         real(sp), intent(inout), dimension(0:,0:) :: u, v
-        real(sp) :: xn, a, b, nx, ny, proj
+        real(sp) :: nx, ny, proj
         integer :: i, j, L, M
         L = size(u,1) - 2
         M = size(u,2) - 2

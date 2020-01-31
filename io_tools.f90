@@ -9,7 +9,7 @@ module io_tools
     subroutine get_ic_scalar(p,filename)
         real(sp), intent(inout), dimension(0:,0:) :: p
         character(len=*), intent(in) :: filename
-        integer :: i, j, L, ierr
+        integer :: i, L, ierr
         ierr = 0
         open(288,file=trim(filename),status="old",iostat=ierr)
         if (ierr > 0) then
@@ -26,7 +26,7 @@ module io_tools
     subroutine get_ic_vec(u,v,filename)
         real(sp), intent(inout), dimension(0:,0:) :: u, v
         character(len=*), intent(in) :: filename
-        integer :: i, j, L, ierr
+        integer :: i, L, ierr
         ierr = 0
         open(287,file=trim(filename),status="old",iostat=ierr)
         if (ierr > 0) then
@@ -44,13 +44,11 @@ module io_tools
     subroutine write_scalar_field(p,filename)
         real(sp), intent(inout), dimension(0:,0:) :: p
         character(len=*), intent(in) :: filename
-        integer :: i, j, L
+        integer :: i, L
         open(194,file=trim(filename),status="replace")
         L = size(p,1) - 2 
         do i=0,L+1
-            !do j=0,N+1
-                write(194,*) p(i,:)
-            !end do
+            write(194,*) p(i,:)
         end do
         close(194)
     end subroutine write_scalar_field
@@ -58,7 +56,7 @@ module io_tools
     subroutine write_vec_field(u,v,filename)
         real(sp), intent(inout), dimension(0:,0:) :: u, v
         character(len=*), intent(in) :: filename
-        integer :: i, j, L
+        integer :: i, L
         open(194,file=trim(filename),status="replace")
         L = size(u,1) - 2 
         do i=0,L+1
@@ -238,7 +236,7 @@ module io_tools
             u0 = u
             v0 = v
             ! IMPONGO CONDIZIONI AL BORDO SULLA C.I.
-            call set_all_bnd(x,u,v,x0,u0,v0,set_bnd_box)
+            call set_all_bnd(x,u,v,x0,u0,v0,bndcnd)
             u1 = u
             v1 = v
             ! SCRIVO CONDIZIONI INIZIALI USATE

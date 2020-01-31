@@ -6,7 +6,7 @@ program ns_game
     implicit none
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
-    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check
+    integer :: L, M, Niter, i, err, j, conv_check
     real(sp) :: LL, diff, simtime, ReL, inizio, fine
     character(64) :: argv, path
     real(sp), parameter :: conv = 0.03
