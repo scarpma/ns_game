@@ -36,7 +36,7 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.0002 ! should be adimensional, so changes with reynolds
+    dt = 0.001 ! should be adimensional, so changes with reynolds
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
     

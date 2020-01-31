@@ -1,0 +1,1 @@
+all test are made with dt=0.0002 but with 0.001 the convergence is very faster !!
