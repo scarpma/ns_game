@@ -2,12 +2,13 @@ module bc
     use precision
     implicit none
 
-    !interface 
-    !    subroutine set_bnd(b,x)
-    !        integer, intent(in) :: b
-    !        real(sp), intent(inout), dimension(0:,0:) :: x
-    !    end subroutine
-    !end interface
+     interface 
+        subroutine set_bnd(b,x)
+            use precision    
+            integer, intent(in) :: b
+            real(sp), intent(inout), dimension(0:,0:) :: x
+        end subroutine
+    end interface
 
     contains
 
@@ -91,6 +92,17 @@ module bc
         x(L+1,M+1) = 0.5_sp*(x(L,M+1) + x(L+1,M))
 
     end subroutine set_bnd_box
+
+    subroutine set_all_bnd(x,u,v,x0,u0,v0,bndcnd)
+        procedure(set_bnd) :: bndcnd
+        real(sp), dimension(0:,0:), intent(inout) :: x, u, v, x0, u0, v0
+        call bndcnd(0,x)
+        call bndcnd(1,u)
+        call bndcnd(2,v)
+        call bndcnd(0,x0)
+        call bndcnd(1,u0)
+        call bndcnd(2,v0)
+    end subroutine set_all_bnd
 
     subroutine set_bnd_per(b,x)
         integer, intent(in) :: b

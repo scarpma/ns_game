@@ -198,17 +198,27 @@ module io_tools
         !write(*,"(' rc=',ES9.3)") real(rc)*h
     end subroutine print_parameters 
     
-    subroutine take_n_snapshots(n,x,u,v,i,j,Niter)
+    subroutine take_n_snapshots(n,x,u,v,ut,vt,ek,i,j,Niter)
         integer, intent(in) :: i, n, Niter
         integer, intent(inout) :: j
-        real(sp), intent(in), dimension(0:,0:) :: x,u,v
-        character(64) :: path
+        real(sp), intent(in), dimension(0:,0:) :: x, u, v
+        complex(sp), intent(in), dimension(0:,0:) :: ut, vt
+        complex(sp), intent(inout), dimension(0:) :: ek
         
+        character(64) :: path
+        integer :: kkk, kkk_dim
+    
+        kkk_dim = size(ek,1)
         if (mod(i-1,Niter/n)==0) then
             write(path,'(a,i4.4,a)') "data/vel_out.v",j,".vtk"
-            !write(argv,'(a,i4.4,a)') "data/dens_out.v",j,".vtk"
             call out_paraview_2D_uv(u,v,path)
-            !call out_paraview_2D_dens(x,argv)
+            call e_spect(ut,vt,ek)
+            write(path,'(a,i4.4,a)') "data/spec_out",j,".dat"
+            open(456,file=path,status="replace")
+            do kkk = 0,kkk_dim-1
+                write(456,"(i0,XX,2(ES10.3,XX))") kkk, real(ek(kkk)), imag(ek(kkk))
+            end do
+            close(456)
             j = j + 1
         end if
     end subroutine take_n_snapshots

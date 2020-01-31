@@ -1,17 +1,22 @@
 program ns_game
     use precision
     use solvers
+    use common
     use io_tools
     use bc
     implicit none
     
     real(sp), allocatable, dimension(:,:) :: u, v, u0, v0, x, x0, u1, v1, p, div
     complex(sp), allocatable, dimension(:,:) :: ut, vt, fu, fv
-    integer :: L, M, Niter, i, err, ierr, j, argn, k, conv_check = 0, Nf
+    integer :: L, M, Niter, i, err, j, Nf
     real(sp) :: diff, simtime, ReL, Ref, Tad, inizio, fine, eps, e_in, eta
     character(64) :: argv, path
-    real(sp), parameter :: conv = 0.03
     
+
+    complex(sp), allocatable :: ek(:)
+    integer :: kkk_dim
+
+
     call cpu_time(inizio)
     pi = 4.0_sp*atan(1.0_sp)
      
@@ -38,16 +43,17 @@ program ns_game
     ! INIZIALIZZO PARAMETRI
     LL = 1.0_sp
     h = LL/real(M,sp)
-    dt = 0.00001_sp ! should be adimensional, so changes with reynolds
+    dt = 0.0001! 0.00001_sp ! should be adimensional, so changes with reynolds
     simtime = real(Niter,sp)*dt
     diff = 0.001_sp
     k0 = 2._sp*pi/LL
-    sigma = 1000._sp
+    sigma = 50.0_sp
     !eps = TL * sigma**2.0_sp
-    eps = 3._sp
-    TL = eps/sigma**2._sp!20*dt
+    eps = 10.0_sp
     print*, "eps=",eps
-    KF2 = 4._sp*(k0*sqrt(2._sp))**2._sp
+    TL = eps/sigma**2._sp!20*dt
+    print*, "TL=",TL
+    KF2 = (k0*sqrt(2._sp))**2._sp
     print*, "KF=",sqrt(KF2)
     call count_forced_modes(Nf,L,M)
     print*, "Nf=",Nf
@@ -61,6 +67,12 @@ program ns_game
     Tad = TL * eps * k0**(2./3.)
     print*, "Tad=", Tad
     
+
+    kkk_dim = nint(sqrt(real(((L+2)/2)**2+((M+2)/2)**2,sp)))
+    print*, kkk_dim
+
+
+
     !xc = L/5
     !yc = M/2
     !rc = M/5
@@ -79,6 +91,11 @@ program ns_game
     allocate(p(0:L+1,0:M+1), div(0:L+1,0:M+1), stat=err)
     allocate(ut(0:((L+2)/2),0:M+1), vt(0:((L+2)/2),0:M+1), stat=err)
     allocate(fu(0:((L+2)/2),0:M+1), fv(0:((L+2)/2),0:M+1), stat=err)
+    allocate(ek(0:kkk_dim), stat=err)
+
+
+
+
     if (err > 0) then
          print*, "allocation error"
          stop
@@ -91,6 +108,10 @@ program ns_game
     call init_variables(x0,x,u0,u,u1,v0,v,v1,set_bnd_per)
     ut = complex(0._sp,0._sp)
     vt = complex(0._sp,0._sp)
+    fu = complex(0._sp,0._sp)
+    fv = complex(0._sp,0._sp)
+    ek = complex(0._sp,0._sp)
+    
     
     ! SCRIVO DATI INIZIALI
     i = 0
@@ -99,17 +120,19 @@ program ns_game
     call out_paraview_2D_uv(u,v,path)
     !call out_paraview_2D_dens(x,argv)
 
+   
+
+
+
     ! INTEGRO
     print*, "Integro "
     j = 1
     do i=1,Niter-1
-        !call get_from_UI(x0,u0,v0)
         call vel_step(u,v,u0,v0,ut,vt,fu,fv,p,div,1.0_sp/ReL,set_bnd_per)
-        !call density_step(x,x0,u,v,diff,set_bnd_box)
-        call take_n_snapshots(60,x,u,v,i,j,Niter)
+        call take_n_snapshots(60,x,u,v,ut,vt,ek,i,j,Niter)
         call progress(10*(i+1)/Niter)
-        call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
-        if (conv_check == 1) exit
+    !    call check_uv_maxerr(500,u,v,u1,v1,conv,i,conv_check)
+    !    if (conv_check == 1) exit
     end do
     
     ! SCRIVO FILE OUTPUT
@@ -118,10 +141,10 @@ program ns_game
     call write_vec_field(u,v,"data/vel_out.dat")
     
     ! SCRIVO PROFILI PER CONFRONTO CON SOL. ESATTA
-    call write_profiles(u,v)
-    
+    !call write_profiles(u,v)
+
     ! DEALLOCO
-    deallocate(x,x0,u,u0,v,v0,stat=err)
+    deallocate(x,x0,u,u0,v,v0,ut,vt,fu,fv,ek,stat=err)
     if (err > 0) then
          print*, "deallocation error"
          stop

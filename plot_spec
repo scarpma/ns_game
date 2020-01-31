@@ -1,0 +1,16 @@
+set terminal wxt
+#f(x) = a*(x)**(-5./3.)
+    
+#fit  f(x) "data/spec_out0061.dat" via a
+
+#set yrange [5800:12500]
+set logscale
+set key left bottom
+
+
+p [1:63] "data/spec_out0021.dat" u (($1)):(($2))
+rep "data/spec_out0031.dat" u (($1)):(($2))
+rep "data/spec_out0041.dat" u (($1)):(($2))
+rep "data/spec_out0051.dat" u (($1)):(($2))
+rep "data/spec_out0061.dat" u (($1)):(($2))
+rep f(x)
