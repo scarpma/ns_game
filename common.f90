@@ -5,34 +5,6 @@ module common
 
     contains
 
-    subroutine lin_sol(b,x,x0,a,c,bndcnd)
-        procedure(set_bnd) :: bndcnd
-        integer, intent(in) :: b
-        real(sp), intent(inout), dimension(0:,0:) :: x
-        real(sp), intent(in), dimension(0:,0:) :: x0
-        real(sp), intent(in) :: a, c
-        
-        integer :: L, M, k, i, j
-   !     real(sp) :: x_av, x_av0
-        
-        L = size(x,1)-2
-        M = size(x,2)-2
-        
-        do k=1,10
-   !         x_av = 0._sp
-            do j=1,M
-                do i=1,L
-                    x(i,j) = ( x0(i,j) + a*(x(i-1,j)+x(i+1,j)+x(i,j-1)+x(i,j+1)) )/c
-   !                 x_av = x_av + x(i,j)
-                end do
-            end do
-        call bndcnd(b,x)
-   !         if (abs(x_av-x_av0)<conviter) exit
-   !         x_av0 = x_av
-        end do
-        !write(*,'(a1,i1,a1,4(ES15.6),i4)') 'u',b,' ',minval(x),maxval(x),x_av/(L*M),abs(x_av-x_av),k
-    end subroutine lin_sol
-
     subroutine particle_tracer(x,y,i,j,u,v)
         integer, intent(in) :: i, j
         real(sp), intent(in), dimension(0:,0:) :: u, v
@@ -46,7 +18,6 @@ module common
         real(sp), intent(in) :: x, y
         real(sp) :: interpolate, s0, t0, s1, t1
         integer :: i0, j0, i1, j1
-        !print*, x,y
         i0 = int(x)
         i1 = i0 + 1
         j0 = int(y)
@@ -56,7 +27,6 @@ module common
         s0 = 1._sp - s1
         t1 = y - j0
         t0 = 1._sp - t1
-        !print*, i0,i1,j0,j1
 
         interpolate = s0*(t0*d0(i0,j0)+t1*d0(i0,j1))+s1*(t0*d0(i1,j0)+t1*d0(i1,j1))
     end function interpolate
@@ -102,22 +72,25 @@ module common
         real(sp), intent(in) :: sigma, TL
 
         complex(sp) :: ww
-        real(sp) :: k, k1, k2
+        real(sp) :: k, k1, k2, norm
         integer :: L, M, i, j, seed
         
         L = size(fu,1)
         M = size(fu,2)
+        norm = sqrt(real(((L-1)*2)*M,sp))
         do j=0,M/2
             do i=0,L-1
                 k1 = real(i,sp)*k0
                 k2 = real(j,sp)*k0
                 k = k1**2._sp+k2**2._sp
-                if (k==0._sp .or. k > KF2) cycle
-                call ou_eulero(TL,sigma,fu(i,j))
-                call ou_eulero(TL,sigma,fv(i,j))
-                ww = k1*fu(i,j)+k2*fv(i,j)
-                ut(i,j) = ut(i,j) + dt*( fu(i,j) - ww*k1/k)
-                vt(i,j) = vt(i,j) + dt*( fv(i,j) - ww*k2/k)
+                if (k < KI2 .or. k > KF2) cycle
+                call ou_eulero(1._sp/TL,sigma,fu(i,j))
+                call ou_eulero(1._sp/TL,sigma,fv(i,j))
+                ww = complex(k1,0._sp)*fu(i,j)+complex(k2,0._sp)*fv(i,j)
+                !write(*,'(i10,4(ES12.4))') M*j+i,fu(i,j)%re, fv(i,j)%re, fu(i,j)%im, fv(i,j)%im
+                !write(234,'(i10,4(ES12.4))') M*j+i,fu(i,j)%re, fv(i,j)%re, fu(i,j)%im, fv(i,j)%im
+                ut(i,j) = ut(i,j) + norm*dt*( fu(i,j) - ww*k1/k)
+                vt(i,j) = vt(i,j) + norm*dt*( fv(i,j) - ww*k2/k)
             end do
         end do
         do j=M/2+1,M-1
@@ -125,13 +98,14 @@ module common
                 k1 = real(i,sp)*k0
                 k2 = real(j-M,sp)*k0
                 k = k1**2._sp+k2**2._sp
-                if (k==0._sp .or. k > KF2) cycle
-                ww = k1*ut(i,j)+k2*vt(i,j)
+                if (k < KI2 .or. k > KF2) cycle
                 call ou_eulero(1._sp/TL,sigma,fu(i,j))
                 call ou_eulero(1._sp/TL,sigma,fv(i,j))
-                ww = k1*fu(i,j)+k2*fv(i,j)
-                ut(i,j) = ut(i,j) + dt*( fu(i,j) - ww*k1/k)
-                vt(i,j) = vt(i,j) + dt*( fv(i,j) - ww*k2/k)
+                ww = complex(k1,0._sp)*fu(i,j)+complex(k2,0._sp)*fv(i,j)
+                !write(*,'(i10,4(ES12.4))') M*j+i,fu(i,j)%re, fv(i,j)%re, fu(i,j)%im, fv(i,j)%im
+                !write(234,'(i10,4(ES12.4))') M*j+i,fu(i,j)%re, fv(i,j)%re, fu(i,j)%im, fv(i,j)%im
+                ut(i,j) = ut(i,j) + norm*dt*( fu(i,j) - ww*k1/k)
+                vt(i,j) = vt(i,j) + norm*dt*( fv(i,j) - ww*k2/k)
             end do
         end do
         
@@ -145,8 +119,8 @@ module common
 
         call c8_normal(dw)
         dw = dw * sqrt ( dt )
-        z = z - dt*theta*z + sigma*dw
-    
+        z = z - complex(dt,0.0_sp)*complex(theta,0._sp)*z + complex(sigma,0._sp)*dw
+        !print*, z
     end subroutine ou_eulero
 
     subroutine count_forced_modes(Nf,L,M)
@@ -165,7 +139,7 @@ module common
                 k1 = real(i,sp)*k0
                 k2 = real(j,sp)*k0
                 k = k1**2._sp+k2**2._sp
-                if (k==0._sp .or. k > KF2) cycle
+                if (k < KI2 .or. k > KF2) cycle
                 Nf = Nf + 1
             end do
         end do
@@ -174,21 +148,94 @@ module common
                 k1 = real(i,sp)*k0
                 k2 = real(j-M,sp)*k0
                 k = k1**2._sp+k2**2._sp
-                if (k==0._sp .or. k > KF2) cycle
+                if (k < KI2 .or. k > KF2) cycle
                 Nf = Nf + 1
             end do
         end do
     end subroutine count_forced_modes
 
+    subroutine create_shells(sh,ut,nn)
+        implicit none
+        real(sp), intent(inout) :: sh(0:)
+        complex(sp), intent(inout) :: ut(0:,0:)
+        integer, intent(in) :: nn
+        
+        integer :: i,j,k,n_modes,check,kkk,kk,L,M
+        
+        L = size(ut,1)
+        M = size(ut,2)
+        
+        k=1
+        kkk=1
+        check = 0
+        sh(0) = 0.
+        n_modes = 0
+        do while (1>0)
+            do j=0,M/2
+                do i=0,L-1
+                    kk = nint(sqrt(real(i**2+j**2,sp)))
+                    if (kk==k) then
+                        n_modes = n_modes + 1
+                        if (n_modes >= 20) then
+                            check = 1
+                        end if
+                    end if
+                end do
+            end do
+            do j=M/2+1,M-1
+                do i=0,L-1
+                    kk = nint(sqrt(real(i**2+(j-M)**2,sp)))
+                    if (kk==k) then
+                        n_modes = n_modes + 1
+                        if (n_modes >= nn) then
+                            check = 1
+                        end if
+                    end if
+                end do
+            end do
+            if (check == 1) then
+                sh(kkk) = k
+                kkk = kkk + 1
+                check = 0
+                n_modes = 0
+            end if
+            k = k + 1
+            
+            if (k>kmax) exit
+
+        end do
+
+    end subroutine
+
+    function tot_en(u,v)
+        real(sp), intent(in), dimension(0:,0:) :: u, v
+        real(sp) :: tot_en
+        integer :: i, j, L, M
+        
+        L = size(u,1)
+        M = size(u,2)
+        
+        tot_en = 0._sp
+        do j=0,M-1
+            do i=0,L-1
+                tot_en = tot_en + 0.5_sp*(u(i,j)*u(i,j)+v(i,j)*v(i,j))
+            end do
+        end do
+        
+        return
+        
+    end function
+
     subroutine e_spect(ut,vt,ek)
         complex(sp), intent(in), dimension(0:,0:) :: ut, vt
         complex(sp), intent(inout), dimension(0:) :: ek
         
+        real(sp) :: norm
         integer :: i, j, L, M, kk
-        real(sp) :: k1, k2, k
                
         L = size(ut,1)
         M = size(ut,2)
+        norm = real(((L-1)*2)*M,sp)
         ek = complex(0.0,0.0)
         
         do j=0,M/2
@@ -203,6 +250,8 @@ module common
                 ek(kk) = ek(kk) + ut(i,j)*conjg(ut(i,j)) + vt(i,j)*conjg(vt(i,j))
             end do
         end do
+        
+        ek = ek / norm
     
         !L = size(ut,1)
         !M = size(ut,2)

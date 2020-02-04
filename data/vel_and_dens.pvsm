@@ -12,7 +12,7 @@
         <Element index="0" value="10"/>
       </Property>
       <Property name="EndTime" id="265.EndTime" number_of_elements="1">
-        <Element index="0" value="61"/>
+        <Element index="0" value="59"/>
       </Property>
       <Property name="FramesPerTimestep" id="265.FramesPerTimestep" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -690,31 +690,31 @@
         <Domain name="range" id="13848.NumberOfTableValues.range"/>
       </Property>
       <Property name="RGBPoints" id="13848.RGBPoints" number_of_elements="28">
-        <Element index="0" value="0.00013288738956788914"/>
+        <Element index="0" value="0"/>
         <Element index="1" value="0"/>
         <Element index="2" value="0"/>
         <Element index="3" value="0.5625"/>
-        <Element index="4" value="0.002615994645570735"/>
+        <Element index="4" value="2.194469304590386e-7"/>
         <Element index="5" value="0"/>
         <Element index="6" value="0"/>
         <Element index="7" value="1"/>
-        <Element index="8" value="0.006340655669249755"/>
+        <Element index="8" value="5.486173384912392e-7"/>
         <Element index="9" value="0"/>
         <Element index="10" value="1"/>
         <Element index="11" value="1"/>
-        <Element index="12" value="0.01031362794929311"/>
+        <Element index="12" value="8.997324864762405e-7"/>
         <Element index="13" value="0.5"/>
         <Element index="14" value="1"/>
         <Element index="15" value="0.5"/>
-        <Element index="16" value="0.0145349095302543"/>
+        <Element index="16" value="0.0000012727922015994724"/>
         <Element index="17" value="1"/>
         <Element index="18" value="1"/>
         <Element index="19" value="0"/>
-        <Element index="20" value="0.037852476141694985"/>
+        <Element index="20" value="0.0000033335039998043795"/>
         <Element index="21" value="1"/>
         <Element index="22" value="0"/>
         <Element index="23" value="0"/>
-        <Element index="24" value="0.043338955493849016"/>
+        <Element index="24" value="0.000003818376753466604"/>
         <Element index="25" value="0.5"/>
         <Element index="26" value="0"/>
         <Element index="27" value="0"/>
@@ -853,15 +853,15 @@
         <Domain name="bool" id="13847.AllowDuplicateScalars.bool"/>
       </Property>
       <Property name="Points" id="13847.Points" number_of_elements="12">
-        <Element index="0" value="0.00013288738956788914"/>
+        <Element index="0" value="0"/>
         <Element index="1" value="0"/>
         <Element index="2" value="0.5"/>
         <Element index="3" value="0"/>
-        <Element index="4" value="0.0032367714934588864"/>
+        <Element index="4" value="2.7430866606848167e-7"/>
         <Element index="5" value="0.8308823704719543"/>
         <Element index="6" value="0.5"/>
         <Element index="7" value="0"/>
-        <Element index="8" value="0.043338955493849016"/>
+        <Element index="8" value="0.000003818376753466604"/>
         <Element index="9" value="1"/>
         <Element index="10" value="0.5"/>
         <Element index="11" value="0"/>
@@ -12858,28 +12858,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="14337.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="14337.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="14337.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="14337.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="14337.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="14337.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="14337.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="14337.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="14337.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="14337.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="14337.Ambient" number_of_elements="1">
@@ -12933,16 +12923,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="14337.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="14337.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="14337.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -12981,15 +12962,7 @@
       <Property name="GlyphTableIndexArray" id="14337.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="14337.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="14337.GlyphType" number_of_elements="1">
@@ -13069,14 +13042,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="14337.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="14337.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="14337.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="14337.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="14279"/>
@@ -13099,20 +13065,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="14337.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="14337.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="14337.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="14337.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="14337.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="14337.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -13178,9 +13135,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="14337.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="14337.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="14337.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="14337.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -13216,29 +13171,13 @@
       <Property name="SelectOrientationVectors" id="14337.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="14337.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="14337.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="14337.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="14337.SelectionCellLabelBold" number_of_elements="1">
@@ -13387,14 +13326,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="14337.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="14337.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="14337.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -14135,28 +14067,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="15393.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="15393.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15393.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="15393.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15393.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15393.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="15393.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="15393.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="15393.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="15393.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="15393.Ambient" number_of_elements="1">
@@ -14210,16 +14132,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="15393.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15393.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="15393.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -14258,15 +14171,7 @@
       <Property name="GlyphTableIndexArray" id="15393.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15393.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="15393.GlyphType" number_of_elements="1">
@@ -14346,14 +14251,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="15393.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15393.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15393.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="15393.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="15335"/>
@@ -14376,20 +14274,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15393.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15393.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="15393.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15393.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15393.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="15393.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -14455,9 +14344,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="15393.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15393.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15393.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="15393.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -14493,29 +14380,13 @@
       <Property name="SelectOrientationVectors" id="15393.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="15393.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="15393.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15393.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="15393.SelectionCellLabelBold" number_of_elements="1">
@@ -14664,14 +14535,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15393.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15393.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="15393.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -14808,28 +14672,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="15639.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="15639.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15639.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="15639.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15639.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15639.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="15639.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="15639.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="15639.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="15639.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="15639.Ambient" number_of_elements="1">
@@ -14883,16 +14737,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="15639.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15639.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="15639.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -14931,15 +14776,7 @@
       <Property name="GlyphTableIndexArray" id="15639.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15639.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="15639.GlyphType" number_of_elements="1">
@@ -15019,14 +14856,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="15639.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15639.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15639.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="15639.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="15581"/>
@@ -15049,20 +14879,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15639.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15639.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="15639.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15639.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15639.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="15639.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -15128,9 +14949,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="15639.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15639.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15639.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="15639.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -15166,29 +14985,13 @@
       <Property name="SelectOrientationVectors" id="15639.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="15639.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="15639.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15639.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="15639.SelectionCellLabelBold" number_of_elements="1">
@@ -15337,14 +15140,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15639.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15639.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="15639.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -15481,28 +15277,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="15885.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="15885.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15885.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="15885.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15885.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15885.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="15885.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="15885.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="15885.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="15885.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="15885.Ambient" number_of_elements="1">
@@ -15556,16 +15342,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="15885.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="15885.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="15885.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -15604,15 +15381,7 @@
       <Property name="GlyphTableIndexArray" id="15885.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15885.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="15885.GlyphType" number_of_elements="1">
@@ -15692,14 +15461,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="15885.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="15885.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15885.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="15885.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="15827"/>
@@ -15722,20 +15484,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15885.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15885.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="15885.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15885.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15885.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="15885.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -15801,9 +15554,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="15885.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="15885.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="15885.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="15885.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -15839,29 +15590,13 @@
       <Property name="SelectOrientationVectors" id="15885.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="15885.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="15885.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="15885.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="15885.SelectionCellLabelBold" number_of_elements="1">
@@ -16010,14 +15745,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="15885.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="15885.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="15885.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -16154,28 +15882,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="16131.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="16131.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="16131.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="16131.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="16131.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16131.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="16131.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="16131.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="16131.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="16131.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="16131.Ambient" number_of_elements="1">
@@ -16229,16 +15947,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="16131.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="16131.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="16131.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -16277,15 +15986,7 @@
       <Property name="GlyphTableIndexArray" id="16131.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="16131.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="16131.GlyphType" number_of_elements="1">
@@ -16365,14 +16066,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="16131.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="16131.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16131.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="16131.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="16073"/>
@@ -16395,20 +16089,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="16131.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16131.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="16131.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="16131.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="16131.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="16131.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -16474,9 +16159,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="16131.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="16131.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="16131.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="16131.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -16512,29 +16195,13 @@
       <Property name="SelectOrientationVectors" id="16131.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="16131.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="16131.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="16131.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="16131.SelectionCellLabelBold" number_of_elements="1">
@@ -16683,14 +16350,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="16131.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16131.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="16131.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -16827,28 +16487,18 @@
       </Property>
       <Property name="SelectionCellFieldDataArrayName" id="16377.SelectionCellFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="ReasonForTermination"/>
-        <Domain name="array_list" id="16377.SelectionCellFieldDataArrayName.array_list">
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="16377.SelectionCellFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionPointFieldDataArrayName" id="16377.SelectionPointFieldDataArrayName" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="16377.SelectionPointFieldDataArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16377.SelectionPointFieldDataArrayName.array_list"/>
       </Property>
       <Property name="SelectionVisibility" id="16377.SelectionVisibility" number_of_elements="1">
         <Element index="0" value="1"/>
         <Domain name="bool" id="16377.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="16377.Visibility" number_of_elements="1">
-        <Element index="0" value="1"/>
+        <Element index="0" value="0"/>
         <Domain name="bool" id="16377.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="16377.Ambient" number_of_elements="1">
@@ -16902,16 +16552,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="velocity"/>
-        <Domain name="array_list" id="16377.ColorArrayName.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
-        </Domain>
+        <Domain name="array_list" id="16377.ColorArrayName.array_list"/>
       </Property>
       <Property name="ColorByLODIndex" id="16377.ColorByLODIndex" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -16950,15 +16591,7 @@
       <Property name="GlyphTableIndexArray" id="16377.GlyphTableIndexArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="16377.GlyphTableIndexArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="GlyphType" id="16377.GlyphType" number_of_elements="1">
@@ -17038,14 +16671,7 @@
       </Property>
       <Property name="OSPRayScaleArray" id="16377.OSPRayScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
-        <Domain name="array_list" id="16377.OSPRayScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16377.OSPRayScaleArray.array_list"/>
       </Property>
       <Property name="OSPRayScaleFunction" id="16377.OSPRayScaleFunction" number_of_elements="1">
         <Proxy value="16319"/>
@@ -17068,20 +16694,11 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="16377.OpacityArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16377.OpacityArray.array_list"/>
       </Property>
       <Property name="OpacityArrayComponent" id="16377.OpacityArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="16377.OpacityArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="16377.OpacityArrayComponent.comps"/>
       </Property>
       <Property name="OpacityByArray" id="16377.OpacityByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -17147,9 +16764,7 @@
       </Property>
       <Property name="ScaleArrayComponent" id="16377.ScaleArrayComponent" number_of_elements="1">
         <Element index="0" value="0"/>
-        <Domain name="comps" id="16377.ScaleArrayComponent.comps">
-          <Entry value="0" text=""/>
-        </Domain>
+        <Domain name="comps" id="16377.ScaleArrayComponent.comps"/>
       </Property>
       <Property name="ScaleByArray" id="16377.ScaleByArray" number_of_elements="1">
         <Element index="0" value="0"/>
@@ -17185,29 +16800,13 @@
       <Property name="SelectOrientationVectors" id="16377.SelectOrientationVectors" number_of_elements="1">
         <Element index="0" value="Normals"/>
         <Domain name="array_list" id="16377.SelectOrientationVectors.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectScaleArray" id="16377.SelectScaleArray" number_of_elements="1">
         <Element index="0" value="AngularVelocity"/>
         <Domain name="array_list" id="16377.SelectScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
           <String text="None"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-          <String text="ReasonForTermination"/>
-          <String text="SeedIds"/>
         </Domain>
       </Property>
       <Property name="SelectionCellLabelBold" id="16377.SelectionCellLabelBold" number_of_elements="1">
@@ -17356,14 +16955,7 @@
         <Element index="2" value=""/>
         <Element index="3" value="0"/>
         <Element index="4" value="AngularVelocity"/>
-        <Domain name="array_list" id="16377.SetScaleArray.array_list">
-          <String text="AngularVelocity"/>
-          <String text="IntegrationTime"/>
-          <String text="Normals"/>
-          <String text="Rotation"/>
-          <String text="Vorticity"/>
-          <String text="velocity"/>
-        </Domain>
+        <Domain name="array_list" id="16377.SetScaleArray.array_list"/>
       </Property>
       <Property name="ShaderPreset" id="16377.ShaderPreset" number_of_elements="1">
         <Element index="0" value="1"/>
@@ -18174,7 +17766,7 @@
         <Domain name="bool" id="14091.SelectionVisibility.bool"/>
       </Property>
       <Property name="Visibility" id="14091.Visibility" number_of_elements="1">
-        <Element index="0" value="0"/>
+        <Element index="0" value="1"/>
         <Domain name="bool" id="14091.Visibility.bool"/>
       </Property>
       <Property name="Ambient" id="14091.Ambient" number_of_elements="1">
@@ -21147,9 +20739,9 @@
     </Proxy>
     <Proxy group="sources" type="LegacyVTKFileReader" id="13875" servers="1">
       <Property name="FileNameInfo" id="13875.FileNameInfo" number_of_elements="1">
-        <Element index="0" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0061.vtk"/>
+        <Element index="0" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0000.vtk"/>
       </Property>
-      <Property name="FileNames" id="13875.FileNames" number_of_elements="62">
+      <Property name="FileNames" id="13875.FileNames" number_of_elements="60">
         <Element index="0" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0000.vtk"/>
         <Element index="1" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0001.vtk"/>
         <Element index="2" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0002.vtk"/>
@@ -21210,11 +20802,9 @@
         <Element index="57" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0057.vtk"/>
         <Element index="58" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0058.vtk"/>
         <Element index="59" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0059.vtk"/>
-        <Element index="60" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0060.vtk"/>
-        <Element index="61" value="/home/scarpma/computazionale/ns_game/data/vel_out.v0061.vtk"/>
         <Domain name="files" id="13875.FileNames.files"/>
       </Property>
-      <Property name="TimestepValues" id="13875.TimestepValues" number_of_elements="62">
+      <Property name="TimestepValues" id="13875.TimestepValues" number_of_elements="60">
         <Element index="0" value="0"/>
         <Element index="1" value="1"/>
         <Element index="2" value="2"/>
@@ -21275,8 +20865,6 @@
         <Element index="57" value="57"/>
         <Element index="58" value="58"/>
         <Element index="59" value="59"/>
-        <Element index="60" value="60"/>
-        <Element index="61" value="61"/>
       </Property>
     </Proxy>
     <Proxy group="misc" type="TimeKeeper" id="259" servers="16">
@@ -21290,7 +20878,7 @@
       </Property>
       <Property name="TimeRange" id="259.TimeRange" number_of_elements="2">
         <Element index="0" value="0"/>
-        <Element index="1" value="61"/>
+        <Element index="1" value="59"/>
       </Property>
       <Property name="TimeSources" id="259.TimeSources" number_of_elements="10">
         <Proxy value="13875"/>
@@ -21304,7 +20892,7 @@
         <Proxy value="15937"/>
         <Proxy value="16183"/>
       </Property>
-      <Property name="TimestepValues" id="259.TimestepValues" number_of_elements="62">
+      <Property name="TimestepValues" id="259.TimestepValues" number_of_elements="60">
         <Element index="0" value="0"/>
         <Element index="1" value="1"/>
         <Element index="2" value="2"/>
@@ -21365,8 +20953,6 @@
         <Element index="57" value="57"/>
         <Element index="58" value="58"/>
         <Element index="59" value="59"/>
-        <Element index="60" value="60"/>
-        <Element index="61" value="61"/>
       </Property>
       <Property name="Views" id="259.Views" number_of_elements="1">
         <Proxy value="16389"/>
@@ -21508,8 +21094,8 @@
         <Domain name="bool" id="16389.CenterAxesVisibility.bool"/>
       </Property>
       <Property name="CenterOfRotation" id="16389.CenterOfRotation" number_of_elements="3">
-        <Element index="0" value="0.22557804179086816"/>
-        <Element index="1" value="0.5039771990850568"/>
+        <Element index="0" value="0.49609375"/>
+        <Element index="1" value="0.49609375"/>
         <Element index="2" value="0"/>
       </Property>
       <Property name="CollectGeometryThreshold" id="16389.CollectGeometryThreshold" number_of_elements="1">
@@ -21817,9 +21403,7 @@
         <Element index="0" value="1"/>
         <Domain name="range" id="16389.ValueRenderingMode.range"/>
       </Property>
-      <Property name="ValueRenderingModeGet" id="16389.ValueRenderingModeGet" number_of_elements="1">
-        <Element index="0" value="1"/>
-      </Property>
+      <Property name="ValueRenderingModeGet" id="16389.ValueRenderingModeGet"/>
       <Property name="ViewSize" id="16389.ViewSize" number_of_elements="2">
         <Element index="0" value="1716"/>
         <Element index="1" value="1024"/>
@@ -21841,30 +21425,30 @@
         <Element index="0" value="0"/>
       </Property>
       <Property name="CameraFocalPoint" id="16389.CameraFocalPoint" number_of_elements="3">
-        <Element index="0" value="0.22557804179086816"/>
-        <Element index="1" value="0.5039771990850568"/>
+        <Element index="0" value="0.49609375"/>
+        <Element index="1" value="0.49609375"/>
         <Element index="2" value="0"/>
       </Property>
       <Property name="CameraFocalPointInfo" id="16389.CameraFocalPointInfo" number_of_elements="3">
-        <Element index="0" value="0.22557804179086816"/>
-        <Element index="1" value="0.5039771990850568"/>
+        <Element index="0" value="0.49609375"/>
+        <Element index="1" value="0.49609375"/>
         <Element index="2" value="0"/>
       </Property>
       <Property name="CameraParallelScale" id="16389.CameraParallelScale" number_of_elements="1">
-        <Element index="0" value="0.5594495460796148"/>
+        <Element index="0" value="0.7015825094585276"/>
       </Property>
       <Property name="CameraParallelScaleInfo" id="16389.CameraParallelScaleInfo" number_of_elements="1">
-        <Element index="0" value="0.5594495460796148"/>
+        <Element index="0" value="0.7015825094585276"/>
       </Property>
       <Property name="CameraPosition" id="16389.CameraPosition" number_of_elements="3">
-        <Element index="0" value="0.22557804179086816"/>
-        <Element index="1" value="0.5039771990850568"/>
-        <Element index="2" value="2.1615470602559848"/>
+        <Element index="0" value="0.49609375"/>
+        <Element index="1" value="0.49609375"/>
+        <Element index="2" value="2.7107066606347456"/>
       </Property>
       <Property name="CameraPositionInfo" id="16389.CameraPositionInfo" number_of_elements="3">
-        <Element index="0" value="0.22557804179086816"/>
-        <Element index="1" value="0.5039771990850568"/>
-        <Element index="2" value="2.1615470602559848"/>
+        <Element index="0" value="0.49609375"/>
+        <Element index="1" value="0.49609375"/>
+        <Element index="2" value="2.7107066606347456"/>
       </Property>
       <Property name="CameraViewAngle" id="16389.CameraViewAngle" number_of_elements="1">
         <Element index="0" value="30"/>

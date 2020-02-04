@@ -1,0 +1,49 @@
+module aaa
+    implicit none
+
+    real(8), public :: dt, pi
+    contains
+    subroutine ou_eulero(theta,sigma,z)
+        implicit none
+        real(8), intent(in) :: theta, sigma
+        complex(8), intent(inout) :: z
+    
+        complex(8) :: dw
+    
+        call c8_normal(dw)
+        dw = dw * sqrt ( dt )
+        z = z - complex(dt,0.0)*complex(theta,0.0)*z + complex(sigma,0.0)*dw
+    end subroutine ou_eulero
+    
+    subroutine c8_normal(z)
+        implicit none
+        real(8) :: u1, u2
+        complex(8), intent(inout) :: z
+        call random_number(u1)
+        call random_number(u2)
+        z%re = sqrt(-2.0 * log(u1)) * cos(2.0 * pi * u2)
+        z%im = sqrt(-2.0 * log(u1)) * sin(2.0 * pi * u2)
+    end subroutine c8_normal
+end module 
+
+program test
+    use aaa
+    implicit none
+    integer :: i
+    real(8) :: theta, sigma
+    complex(8) :: z
+    
+    pi = 4.0*atan(1.0)
+    dt = 0.001
+    theta = 1./(100.*dt)
+    sigma = 1.0
+    
+    z = complex(1.0, 1.0)
+
+    open(234,file="test.dat",status="replace")
+    do i=1,2000
+        call ou_eulero(theta,sigma,z)
+        write(234,"(i5,2(ES14.5))") i, z%re, z%im
+    end do
+
+end program

@@ -1,4 +1,8 @@
 make
-./ns 126 126 10000 50 1
+./ns 256 256 3000 10 1
 ./pv
-#gnuplot plot_spec -persistent
+gnuplot plot_spec -persistent
+gnuplot plot_en -persistent
+#gfortran -o test test.f90
+#./test
+#gnuplot plot_test -p

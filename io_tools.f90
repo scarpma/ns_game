@@ -9,7 +9,7 @@ module io_tools
     subroutine get_ic_scalar(p,filename)
         real(sp), intent(inout), dimension(0:,0:) :: p
         character(len=*), intent(in) :: filename
-        integer :: i, j, L, ierr
+        integer :: i, L, ierr
         ierr = 0
         open(288,file=trim(filename),status="old",iostat=ierr)
         if (ierr > 0) then
@@ -26,7 +26,7 @@ module io_tools
     subroutine get_ic_vec(u,v,filename)
         real(sp), intent(inout), dimension(0:,0:) :: u, v
         character(len=*), intent(in) :: filename
-        integer :: i, j, L, ierr
+        integer :: i, L, ierr
         ierr = 0
         open(287,file=trim(filename),status="old",iostat=ierr)
         if (ierr > 0) then
@@ -44,7 +44,7 @@ module io_tools
     subroutine write_scalar_field(p,filename)
         real(sp), intent(inout), dimension(0:,0:) :: p
         character(len=*), intent(in) :: filename
-        integer :: i, j, L
+        integer :: i, L
         open(194,file=trim(filename),status="replace")
         L = size(p,1) - 2 
         do i=0,L+1
@@ -58,7 +58,7 @@ module io_tools
     subroutine write_vec_field(u,v,filename)
         real(sp), intent(inout), dimension(0:,0:) :: u, v
         character(len=*), intent(in) :: filename
-        integer :: i, j, L
+        integer :: i, L
         open(194,file=trim(filename),status="replace")
         L = size(u,1) - 2 
         do i=0,L+1
@@ -67,66 +67,6 @@ module io_tools
         end do
         close(194)
     end subroutine write_vec_field
-
-    subroutine out_paraview_vtk(p,u,v,filename)
-        real(sp), intent(inout), dimension(0:,0:) :: u, v, p
-        real(sp), dimension(:), allocatable :: x, y
-        character(*) :: filename
-        integer :: nx, ny, nz, i,j, NXMAX, NYMAX
-        character :: tab 
-        
-        NXMAX = size(u,1) - 2
-        NYMAX = size(u,1) - 2
-        tab = char(9) 
-        nx = NXMAX
-        ny = NYMAX
-        nz = 1
-        
-        ! CREO GRIGLIA STUPIDA
-        allocate(x(0:NXMAX+1), y(0:NXMAX+1))
-        do i=0,NXMAX+1
-            x(i) = real(i,sp); y(i) = real(i,sp)
-        end do
-
-        open(122, file=trim(filename), status="replace")
-        
-        write(122,'(A)') "# vtk DataFile Version 2.0"
-        write(122,'(A)') "U V velocities"
-        write(122,'(A)') "ASCII"
-        write(122,'(A)') "DATASET RECTILINEAR_GRID"
-        write(122,'(A,3(I5))') "DIMENSIONS",nx,ny,nz
-        write(122,'(A,I3,A)') "X_COORDINATES ",nx," float"
-        do i = 0, NXMAX-1
-          !write(122,'(F15.7)') Xc(i,1) 
-          write(122,'(F15.7)') x(i) 
-        end do
-        write(122,'(A,I3,A)') "Y_COORDINATES ",ny," float"
-        do j = 0, NYMAX-1
-          !write(122,'(F15.7)') Yc(1,j) 
-          write(122,'(F15.7)') y(j) 
-        end do
-        write(122,'(A,I3,A)') "Z_COORDINATES ",nz," float"
-        write(122,'(F15.7)') 0.0 
-
-        write(122,'(A,I6)') "POINT_DATA",nx*ny*nz
-        write(122,'(A)') "VECTORS velocity float"
- 
-        do j = 0, NXMAX-1
-          do i = 0, NYMAX-1
-             write(122,'(F15.7,A,F15.7,A,F15.7)') u(i,j), tab, v(i,j), tab, 0.0 
-          end do
-        end do  
-    !    write(122,'(A)') "SCALARS density float"
- 
-    !    do j = 0, NXMAX-1
-    !      do i = 0, NYMAX-1
-    !         write(122,'(F15.7)') p(i,j)
-    !      end do
-    !    end do  
-        close(122)
-        deallocate(x,y)
-
-    end subroutine out_paraview_vtk
 
     subroutine out_paraview_2D_uv(u,v,path)
         real(sp), dimension(0:,0:), intent(in) :: u, v
@@ -184,29 +124,26 @@ module io_tools
     
     end subroutine out_paraview_2D_dens
 
-    subroutine print_parameters(L, h, dt, simtime, diff, ReL)
-        real(sp), intent(in) :: L, h, dt, simtime, diff, ReL
+    subroutine print_parameters(L, h, dt, simtime, ReL)
+        real(sp), intent(in) :: L, h, dt, simtime, ReL
         write(*,"(' Parametri:')")
         write(*,"(' L=',ES9.3)") L
         write(*,"(' h=',ES9.3)") h
         write(*,"(' dt=',ES9.3)") dt
         write(*,"(' simtime=',ES9.3)") simtime
-        write(*,"(' diff=',ES9.3)") diff
         write(*,"(' ReL=',ES9.3)") ReL
-        !write(*,"(' xc=',ES9.3)") real(xc)*h
-        !write(*,"(' yc=',ES9.3)") real(yc)*h
-        !write(*,"(' rc=',ES9.3)") real(rc)*h
     end subroutine print_parameters 
     
-    subroutine take_n_snapshots(n,x,u,v,ut,vt,ek,i,j,Niter)
+    subroutine take_n_snapshots(n,u,v,ut,vt,ek,i,j,Niter)
         integer, intent(in) :: i, n, Niter
         integer, intent(inout) :: j
-        real(sp), intent(in), dimension(0:,0:) :: x, u, v
+        real(sp), intent(in), dimension(0:,0:) :: u, v
         complex(sp), intent(in), dimension(0:,0:) :: ut, vt
         complex(sp), intent(inout), dimension(0:) :: ek
         
         character(64) :: path
         integer :: kkk, kkk_dim
+        real(sp) :: energia_tot
     
         kkk_dim = size(ek,1)
         if (mod(i-1,Niter/n)==0) then
@@ -215,44 +152,35 @@ module io_tools
             call e_spect(ut,vt,ek)
             write(path,'(a,i4.4,a)') "data/spec_out",j,".dat"
             open(456,file=path,status="replace")
+            energia_tot = tot_en(u,v)
             do kkk = 0,kkk_dim-1
-                write(456,"(i0,XX,2(ES10.3,XX))") kkk, real(ek(kkk)), imag(ek(kkk))
+                write(456,"(F10.5,XX,3(ES10.3,XX))") kkk*k0, real(ek(kkk)), imag(ek(kkk)), energia_tot
             end do
+            write(457,"(F10.5,XX,ES10.3,XX)") i*dt, energia_tot
             close(456)
             j = j + 1
         end if
     end subroutine take_n_snapshots
 
-    subroutine init_variables(x0,x,u0,u,u1,v0,v,v1, bndcnd)
-        real(sp), intent(inout), dimension(0:,0:) :: x0,x,u0,u,u1,v0,v,v1
-        procedure(set_bnd) :: bndcnd
+    subroutine init_variables(u0,u,v0,v)
+        real(sp), intent(inout), dimension(0:,0:) :: u0,u,v0,v
         if (command_argument_count()==5) then
             ! CARICO CONDIZIONI INIZIALI DA ULTIMA SIMULAZIONE
-            !call get_ic_scalar(x,"data/dens_out.dat")
             call get_ic_vec(u,v,"data/vel_out.dat")
-            x0 = x
             u0 = u
             v0 = v
-            u1 = u
-            v1 = v
             ! SCRIVO CONDIZIONI INIZIALI USATE
-            !call write_scalar_field(x,"data/dens_ic.dat")
             call write_vec_field(u,v,"data/vel_ic.dat")
         else if (command_argument_count()==4) then
             ! INIZIALIZZO VARIABILI
-            x = 0._sp
             u = 0._sp
             v = 0._sp
-            !call init_sources(x,u,v)
-            x0 = x
+            !call init_sources(u,v)
             u0 = u
             v0 = v
             ! IMPONGO CONDIZIONI AL BORDO SULLA C.I.
-            call set_all_bnd(x,u,v,x0,u0,v0,bndcnd)
-            u1 = u
-            v1 = v
+            call set_all_bnd(u,v,u0,v0)
             ! SCRIVO CONDIZIONI INIZIALI USATE
-            !call write_scalar_field(x,"data/dens_ic.dat")
             call write_vec_field(u,v,"data/vel_ic.dat")
         end if
     end subroutine init_variables

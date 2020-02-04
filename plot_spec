@@ -1,16 +1,17 @@
 set terminal wxt
-#f(x) = a*(x)**(-5./3.)
+f(x) = a*(x)**(-5./3.)
     
-#fit  f(x) "data/spec_out0061.dat" via a
+fit [6.:] f(x) "data/spec_out0059.dat" u 1:2 via a
 
 #set yrange [5800:12500]
 set logscale
 set key left bottom
 
 
-p [1:63] "data/spec_out0021.dat" u (($1)):(($2))
-rep "data/spec_out0031.dat" u (($1)):(($2))
-rep "data/spec_out0041.dat" u (($1)):(($2))
-rep "data/spec_out0051.dat" u (($1)):(($2))
-rep "data/spec_out0061.dat" u (($1)):(($2))
+p [6.:300] "data/spec_out0009.dat" u (($1)):(($2)/($4))
+rep "data/spec_out0019.dat" u (($1)):(($2)/($4))
+rep "data/spec_out0029.dat" u (($1)):(($2)/($4))
+rep "data/spec_out0039.dat" u (($1)):(($2)/($4))
+rep "data/spec_out0049.dat" u (($1)):(($2)/($4))
+rep "data/spec_out0059.dat" u (($1)):(($2)/($4))
 rep f(x)
