@@ -43,13 +43,13 @@ program ns_game
     dt = 0.0005
     simtime = real(Niter,sp)*dt
     k0 = 2._sp*pi/LL
-    sigma = 50_sp
+    sigma = 50._sp
     print*, "sigma=", sigma
     n_modes = 100
     !eps = 10.0_sp
     !print*, "eps=",eps
     !TL = eps/sigma**2._sp!20*dt
-    TL = 0.01*dt
+    TL = 100._sp*dt
     print*, "TL=",TL
     eps = TL * sigma**2.0_sp
     print*, "eps=",eps
