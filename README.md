@@ -1,2 +1,2 @@
-# ns_game
-Fortran implemetation of Incompressible Navier-Stokes equations using Jos Stam Algorithm
+# navier-stokes-char
+Fortran implemetation of Incompressible Navier-Stokes equations using Jos Stam Algorithm (among which method of characteristics)
