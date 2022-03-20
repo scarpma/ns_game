@@ -1,5 +1,7 @@
 # Incompressible Navier-Stokes equation solver
 
+[![CodeFactor](https://www.codefactor.io/repository/github/scarpma/ns_game/badge)](https://www.codefactor.io/repository/github/scarpma/ns_game)
+
 Fortran implemetation of Incompressible Navier-Stokes equations using *Jos Stam Algorithm*. This program was developed as project for a master degree (theoretical Physics) exam "Fisica Computazionale".
 
 This algorithm is a popular one in computer graphics, but does not have good numeric properties (convergence and stability).
